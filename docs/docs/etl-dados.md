@@ -1,4 +1,4 @@
-# 🗺️ O Mapa do ETL: Ingestão e Processamento de Dados
+# O Mapa do ETL: Ingestão e Processamento de Dados
 
 **Responsável:** João Guilherme (@jot4-ge)
 
