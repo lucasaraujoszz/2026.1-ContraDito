@@ -8,7 +8,7 @@ Logo ao acessar o ContraDito, você encontrará a nossa *Hero Section*, que exib
 
 *   **Raio-X do Congresso:** O total de parlamentares monitorados ativamente (513 deputados federais e 81 senadores).
 *   **Volume de Dados:** A quantidade de discursos proferidos em plenário que já foram processados e cruzados pelo nosso motor NLP.
-*   **Média Nacional de Coerência:** Um termômetro geral, atualizado em tempo real, que indica o nível médio de alinhamento entre o que se fala e o que se vota no Brasil.
+*   **Score de coerência dos políticos:** Uma lista que mostra os scores de coerência dos políticos avaliados pelo portal, em ordem decrescente.
 
 ## 2. O Diretório de Políticos
 

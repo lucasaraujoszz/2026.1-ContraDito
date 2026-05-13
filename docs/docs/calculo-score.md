@@ -24,7 +24,7 @@ O motor do ContraDito utiliza a extensão **`pgvector`** no Supabase para calcul
     * **Contradição (Incoerência):** O discurso aponta para um lado, mas o voto registado foi na direção oposta.
 
 ### 4. A Fórmula Matemática do Score
-O *Score de Coerência* é uma nota de **[0 a 100]**, calculada com base no percentual de consistência nos cruzamentos validados pela busca vetorial.
+O *Score de Coerência* é uma nota de **[0 a 10]**, calculada com base no percentual de consistência nos cruzamentos validados pela busca vetorial.
 
 *Fórmula simplificada:*
 **Score = (Total de Ações Coerentes / Total de Cruzamentos Válidos) * 10**

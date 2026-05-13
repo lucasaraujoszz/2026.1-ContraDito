@@ -59,7 +59,7 @@ nav:
       - Decisões Arquiteturais (ADRs): adrs/index.md
       - Testes e Qualidade: qualidade.md
   -  Encerramento:
-      - Avaliação Final: avaliacao.md
+      #- Avaliação Final: avaliacao.md
       - Próximos Passos (Roadmap): roadmap.md
       - Links Úteis: links.md
 

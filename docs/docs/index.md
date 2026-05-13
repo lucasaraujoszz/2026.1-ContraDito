@@ -33,7 +33,7 @@ O objetivo central do ContraDito é fornecer uma ferramenta de auditoria cidadã
 3. **Score de Coerência:** Calcular matematicamente um índice de fidelidade entre o discurso proferido e a ação legislativa tomada no painel eletrônico.
 4. **Interface Clara:** Apresentar essas "provas" lado a lado em uma interface web intuitiva, permitindo que o cidadão tire as suas próprias conclusões.
 
-> **O ContraDito não emite opiniões políticas.** O nosso papel é puramente tecnológico: organizar o caos informacional e colocar a fala e o voto frente a frente num "ringue" de dados públicos.
+> **O ContraDito não emite opiniões políticas.** O nosso papel é puramente tecnológico: organizar as informações e colocar a fala e o voto frente a frente num "ringue" de dados públicos.
 
 ## Equipe
 
@@ -49,13 +49,13 @@ O objetivo central do ContraDito é fornecer uma ferramenta de auditoria cidadã
       <td align="center" style="border: none; background-color: transparent;">
         <a href="https://github.com/jot4-ge">
           <img src="https://avatars.githubusercontent.com/jot4-ge" width="115px;" style="border-radius: 50%;" alt="João Guilherme Amancio"/><br>
-          <sub><b>João Guilherme Amancio</b></sub>
+          <sub><b>João Guilherme Amâncio</b></sub>
         </a>
       </td>
       <td align="center" style="border: none; background-color: transparent;">
         <a href="https://github.com/luizhtmoreira">
           <img src="https://avatars.githubusercontent.com/luizhtmoreira" width="115px;" style="border-radius: 50%;" alt="Luiz"/><br>
-          <sub><b>Luiz</b></sub>
+          <sub><b>Luiz Henrique Thomaz</b></sub>
         </a>
       </td>
     </tr>
@@ -63,19 +63,19 @@ O objetivo central do ContraDito é fornecer uma ferramenta de auditoria cidadã
       <td align="center" style="border: none; background-color: transparent;">
         <a href="https://github.com/lucasaraujoszz">
           <img src="https://avatars.githubusercontent.com/lucasaraujoszz" width="115px;" style="border-radius: 50%;" alt="Lucas"/><br>
-          <sub><b>Lucas</b></sub>
+          <sub><b>Lucas Araújo Lima</b></sub>
         </a>
       </td>
       <td align="center" style="border: none; background-color: transparent;">
         <a href="https://github.com/matheus0346">
           <img src="https://avatars.githubusercontent.com/matheus0346" width="115px;" style="border-radius: 50%;" alt="Matheus"/><br>
-          <sub><b>Matheus</b></sub>
+          <sub><b>Matheus Rodrigues</b></sub>
         </a>
       </td>
       <td align="center" style="border: none; background-color: transparent;">
         <a href="https://github.com/G2SBiell">
           <img src="https://avatars.githubusercontent.com/G2SBiell" width="115px;" style="border-radius: 50%;" alt="Gabriel Portacio"/><br>
-          <sub><b>Gabriel Portacio</b></sub>
+          <sub><b>Gabriel Portácio</b></sub>
         </a>
       </td>
     </tr>

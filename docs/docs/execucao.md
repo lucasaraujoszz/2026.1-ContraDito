@@ -8,21 +8,21 @@ Este documento detalha o processo de provisionamento do ambiente de desenvolvime
 
 A orquestração do nosso ambiente é feita inteiramente via **Docker Compose**, que sobe 4 contêineres simultâneos e interligados:
 
-* 📦 **`banco_dados-1`**: Banco PostgreSQL local com extensão `pgvector` ativada (porta `5432`).
-* 📦 **`api-1`**: API Principal em FastAPI. Atua como o "garçom" do sistema, respondendo ao Front-end (porta `8000`).
-* 📦 **`worker-1`**: Worker isolado de IA em FastAPI. Vive "enclausurado" na rede do Docker por questões de segurança e processamento de NLP (porta interna `8001`).
-* 📦 **`frontend-1`**: Interface da aplicação desenvolvida em Next.js (porta `3000`).
+* **`banco_dados-1`**: Banco PostgreSQL local com extensão `pgvector` ativada (porta `5432`).
+* **`api-1`**: API Principal em FastAPI. Atua como o "garçom" do sistema, respondendo ao Front-end (porta `8000`).
+* **`worker-1`**: Worker isolado de IA em FastAPI. Vive "enclausurado" na rede do Docker por questões de segurança e processamento de NLP (porta interna `8001`).
+* **`frontend-1`**: Interface da aplicação desenvolvida em Next.js (porta `3000`).
 
 ---
 
 ## 2. Passo a Passo para Execução Local
 
 ### Passo 1: Clonar o Repositório
-Certifique-se de estar na branch `develop` do repositório oficial.
+Certifique-se de estar na branch `main` do repositório oficial.
 ```bash
 git clone [https://github.com/SeuUsuario/ContraDito.git](https://github.com/SeuUsuario/ContraDito.git)
 cd ContraDito
-git checkout develop
+git checkout main
 ```
 
 ### Passo 2: Configurar as Variáveis de Ambiente
