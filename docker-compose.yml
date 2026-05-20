@@ -1,4 +1,3 @@
-
 services:
   # 1. O Garçom (Leve e rápido)
   api:
@@ -13,18 +12,26 @@ services:
       - .env
     depends_on:
       - banco_dados
+    networks:
+      - rede_contradito
 
+  # 2. O Cozinheiro (Worker de IA - Isolado)
   worker:
     build:
       context: .
       dockerfile: Dockerfile.worker
+    expose:
+      - "8001" # RNF08: Expõe a porta ESTRITAMENTE para a rede interna do Docker. Não acessível de fora.
     volumes:
       - .:/code
     env_file:
       - .env
     depends_on:
       - banco_dados
+    networks:
+      - rede_contradito
 
+  # 3. Interface do Usuário
   frontend:
     build: ./frontend
     ports:
@@ -35,7 +42,10 @@ services:
     environment:
       - WATCHPACK_POLLING=true
       - NEXT_PUBLIC_API_URL=http://localhost:8000
+    networks:
+      - rede_contradito
 
+  # 4. Persistência
   banco_dados:
     image: pgvector/pgvector:pg15
     environment:
@@ -43,9 +53,16 @@ services:
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_DB=contradito
     ports:
-      - "5432:5432"
+      - "5432:5432" # Mantido exposto para você conseguir inspecionar via DBeaver/PgAdmin localmente
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    networks:
+      - rede_contradito
 
 volumes:
   postgres_data:
+
+# Criação explícita da rede privada do projeto
+networks:
+  rede_contradito:
+    driver: bridge
