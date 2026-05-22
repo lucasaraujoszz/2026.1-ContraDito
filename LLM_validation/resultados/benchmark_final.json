@@ -1,0 +1,76 @@
+{
+  "ranking": [
+    {
+      "posicao": 1,
+      "modelo": "Groq Llama 3.3 70B",
+      "score_final": 96.2,
+      "metricas": {
+        "acuracia": 100.0,
+        "json_valido": 100.0,
+        "tokens_ok": 75.0,
+        "velocidade": 99.8998438742746,
+        "consistencia": 100.0
+      }
+    },
+    {
+      "posicao": 2,
+      "modelo": "Qwen 2.5 7B",
+      "score_final": 91.5,
+      "metricas": {
+        "acuracia": 100.0,
+        "json_valido": 100.0,
+        "tokens_ok": 100.0,
+        "velocidade": 14.870238901817551,
+        "consistencia": 100.0
+      }
+    },
+    {
+      "posicao": 3,
+      "modelo": "Llama 3.1 8B",
+      "score_final": 90.1,
+      "metricas": {
+        "acuracia": 100.0,
+        "json_valido": 100.0,
+        "tokens_ok": 100.0,
+        "velocidade": 1.278463487200654,
+        "consistencia": 100.0
+      }
+    },
+    {
+      "posicao": 4,
+      "modelo": "Gemma 2 9B",
+      "score_final": 90.0,
+      "metricas": {
+        "acuracia": 100.0,
+        "json_valido": 100.0,
+        "tokens_ok": 100.0,
+        "velocidade": 0.0,
+        "consistencia": 100.0
+      }
+    },
+    {
+      "posicao": 5,
+      "modelo": "Groq Qwen 3 32B",
+      "score_final": 15.0,
+      "metricas": {
+        "acuracia": 0.0,
+        "json_valido": 0.0,
+        "tokens_ok": 0.0,
+        "velocidade": 100.0,
+        "consistencia": 100.0
+      }
+    }
+  ],
+  "pesos": {
+    "acuracia": 0.35,
+    "json_valido": 0.2,
+    "tokens_ok": 0.15,
+    "justificativa": 0.15,
+    "velocidade": 0.1,
+    "consistencia": 0.05
+  },
+  "recomendacao": {
+    "inferencia": "Groq Llama 3.3 70B",
+    "resumo": "Qwen 2.5 7B"
+  }
+}

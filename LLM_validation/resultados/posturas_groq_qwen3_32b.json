@@ -1,0 +1,66 @@
+{
+  "pl_001_a_favor": {
+    "postura_inferida": "INDEFINIDO",
+    "justificativa": "<think>\nOkay, let's tackle this. The user wants to know if the fictional deputy Ana Silva from PSOL/SP would vote in favor or against the proposed protocol based on her historical speech. The proposit",
+    "tempo_segundos": 1.06,
+    "erro": "JSON inválido (fallback aplicado)",
+    "gabarito": "A FAVOR",
+    "acertou": false
+  },
+  "pl_001_contra": {
+    "postura_inferida": "INDEFINIDO",
+    "justificativa": "<think>\nOkay, let's see. The user wants me to determine whether the fictional deputy Carlos Mendes would vote in favor or against the proposed legislation based on his historical speech. The key here ",
+    "tempo_segundos": 1.94,
+    "erro": "JSON inválido (fallback aplicado)",
+    "gabarito": "CONTRA",
+    "acertou": false
+  },
+  "pl_002_a_favor": {
+    "postura_inferida": "INDEFINIDO",
+    "justificativa": "<think>\nOkay, let's see. The user wants me to determine whether the fictional deputy Ricardo Almeida would vote in favor or against the proposed legislation based on his historical speech. The key her",
+    "tempo_segundos": 2.5,
+    "erro": "JSON inválido (fallback aplicado)",
+    "gabarito": "A FAVOR",
+    "acertou": false
+  },
+  "pl_002_contra": {
+    "postura_inferida": "INDEFINIDO",
+    "justificativa": "<think>\nOkay, let's see. The user wants me to determine whether the fictional deputy Mariana Costa would vote in favor or against the proposed legislation based on her historical speech. The propositi",
+    "tempo_segundos": 3.25,
+    "erro": "JSON inválido (fallback aplicado)",
+    "gabarito": "CONTRA",
+    "acertou": false
+  },
+  "pl_003_a_favor": {
+    "postura_inferida": "INDEFINIDO",
+    "justificativa": "<think>\nOkay, let's see. The task is to determine whether the fictional deputy Helena Ferreira (PT/BA) would vote in favor or against the proposed legislation based on her historical speech. The propo",
+    "tempo_segundos": 2.07,
+    "erro": "JSON inválido (fallback aplicado)",
+    "gabarito": "A FAVOR",
+    "acertou": false
+  },
+  "pl_003_contra": {
+    "postura_inferida": "INDEFINIDO",
+    "justificativa": "<think>\nOkay, let's see. The user wants me to determine whether the fictional deputy José Santos would vote in favor or against the proposed legislation based on his historical speech. The key here is",
+    "tempo_segundos": 1.15,
+    "erro": "JSON inválido (fallback aplicado)",
+    "gabarito": "CONTRA",
+    "acertou": false
+  },
+  "pl_004_a_favor": {
+    "postura_inferida": "INDEFINIDO",
+    "justificativa": "<think>\nOkay, let's see. The user wants me to determine whether the fictional deputy Pastor Marcos Ribeiro would vote in favor or against the proposed legislation based on his historical speech. The k",
+    "tempo_segundos": 1.93,
+    "erro": "JSON inválido (fallback aplicado)",
+    "gabarito": "A FAVOR",
+    "acertou": false
+  },
+  "pl_004_contra": {
+    "postura_inferida": "INDEFINIDO",
+    "justificativa": "<think>\nOkay, let's see. The user wants me to determine whether the fictional deputy Juliana Rocha (PSOL/RJ) would vote in favor or against the proposed legislation based on her historical speech. The",
+    "tempo_segundos": 5.5,
+    "erro": "JSON inválido (fallback aplicado)",
+    "gabarito": "CONTRA",
+    "acertou": false
+  }
+}

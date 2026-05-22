@@ -1,0 +1,66 @@
+{
+  "pl_001_a_favor": {
+    "postura_inferida": "A FAVOR",
+    "justificativa": "O deputado enfatiza a importância da corresponsabilidade social na prevenção de violências e destaca o papel do setor privado em zelar pela segurança dos clientes, o que se alinha com os objetivos do protocolo 'Não é Não'.",
+    "tempo_segundos": 19.27,
+    "erro": null,
+    "gabarito": "A FAVOR",
+    "acertou": true
+  },
+  "pl_001_contra": {
+    "postura_inferida": "CONTRA",
+    "justificativa": "O deputado defende a responsabilidade do Estado na segurança pública e critica a transferência de responsabilidades para o setor privado, o que sugere que ele não apoiaria a criação de um protocolo de atendimento por parte dos estabelecimentos noturnos.",
+    "tempo_segundos": 19.48,
+    "erro": null,
+    "gabarito": "CONTRA",
+    "acertou": true
+  },
+  "pl_002_a_favor": {
+    "postura_inferida": "A FAVOR",
+    "justificativa": "O deputado enfatiza a importância da priorização no tratamento de doenças com janela terapêutica estreita, reconhecendo que o SUS já aplica princípios de urgência em outras áreas e defende uma abordagem coerente para esses casos.",
+    "tempo_segundos": 19.64,
+    "erro": null,
+    "gabarito": "A FAVOR",
+    "acertou": true
+  },
+  "pl_002_contra": {
+    "postura_inferida": "CONTRA",
+    "justificativa": "O deputado defende um SUS universal e equitativo, sem fragmentação em categorias especiais de atendimento, o que sugere que ele não apoia a criação de prioridades específicas para doenças neuromusculares.",
+    "tempo_segundos": 18.87,
+    "erro": null,
+    "gabarito": "CONTRA",
+    "acertou": true
+  },
+  "pl_003_a_favor": {
+    "postura_inferida": "A FAVOR",
+    "justificativa": "O deputado defende a necessidade de atualizar símbolos públicos para refletir realidade atual e representar grupos sociais de maneira mais inclusiva, o que se alinha com os objetivos da proposição.",
+    "tempo_segundos": 17.67,
+    "erro": null,
+    "gabarito": "A FAVOR",
+    "acertou": true
+  },
+  "pl_003_contra": {
+    "postura_inferida": "CONTRA",
+    "justificativa": "O deputado prioriza políticas públicas com efeitos concretos na vida das pessoas, o que sugere que ele não valorizará mudanças simbólicas sem benefícios mensuráveis.",
+    "tempo_segundos": 17.39,
+    "erro": null,
+    "gabarito": "CONTRA",
+    "acertou": true
+  },
+  "pl_004_a_favor": {
+    "postura_inferida": "A FAVOR",
+    "justificativa": "O deputado defende a responsabilização de quem usa liberdade para atacar o que é sagrado, e considera que as comunidades religiosas devem ser protegidas contra ataques gratuitos.",
+    "tempo_segundos": 18.7,
+    "erro": null,
+    "gabarito": "A FAVOR",
+    "acertou": true
+  },
+  "pl_004_contra": {
+    "postura_inferida": "CONTRA",
+    "justificativa": "O deputado defende a liberdade de expressão e a separação entre religião e poder público, o que sugere que ele não apoia a criminalização das ofensas ao Cristianismo.",
+    "tempo_segundos": 17.64,
+    "erro": null,
+    "gabarito": "CONTRA",
+    "acertou": true
+  }
+}

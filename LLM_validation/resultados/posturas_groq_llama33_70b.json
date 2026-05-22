@@ -1,0 +1,66 @@
+{
+  "pl_001_a_favor": {
+    "postura_inferida": "A FAVOR",
+    "justificativa": "A deputada defende a responsabilidade social dos estabelecimentos em prevenir violências e reconhece a necessidade de ações concretas para proteger os consumidores, o que alinha com os objetivos da proposição 'Protocolo Não é Não'. Ela também destaca que o voluntarismo não é suficiente, sugerindo a necessidade de regulamentação, como proposto na proposição.",
+    "tempo_segundos": 1.2,
+    "erro": null,
+    "gabarito": "A FAVOR",
+    "acertou": true
+  },
+  "pl_001_contra": {
+    "postura_inferida": "CONTRA",
+    "justificativa": "O deputado expressa preocupação com a transferência de responsabilidades estatais para o setor privado e defende que o Estado deve garantir a segurança, o que sugere que ele não apoiaria a imposição de obrigações adicionais aos estabelecimentos privados, como proposto na proposição 'Protocolo Não é Não'.",
+    "tempo_segundos": 0.69,
+    "erro": null,
+    "gabarito": "CONTRA",
+    "acertou": true
+  },
+  "pl_002_a_favor": {
+    "postura_inferida": "A FAVOR",
+    "justificativa": "O deputado destaca a importância de priorizar o tratamento de doenças com janela terapêutica estreita e reconhece a necessidade de eficiência no uso de recursos públicos para atender a quem mais precisa, o que alinha com os objetivos da proposição. Além disso, ele enfatiza a questão de justiça com quem mais precisa, o que sugere que ele apoiaria medidas para garantir atendimento prioritário a pessoas com doenças neuromusculares com paralisia motora.",
+    "tempo_segundos": 1.03,
+    "erro": null,
+    "gabarito": "A FAVOR",
+    "acertou": true
+  },
+  "pl_002_contra": {
+    "postura_inferida": "CONTRA",
+    "justificativa": "O deputado manifesta preocupação com a fragmentação do SUS e defende que decisões sobre atendimento devem ser técnicas, baseadas em protocolos médicos, e não imposições legislativas genéricas, o que sugere que ele não apoiaria a criação de prioridades específicas para doenças neuromusculares com paralisia motora. Além disso, ele defende um SUS universal e equitativo, o que implica não criar privilégios setoriais.",
+    "tempo_segundos": 5.06,
+    "erro": null,
+    "gabarito": "CONTRA",
+    "acertou": true
+  },
+  "pl_003_a_favor": {
+    "postura_inferida": "A FAVOR",
+    "justificativa": "A deputada Helena Ferreira destaca a importância de atualizar símbolos públicos para refletir a realidade atual e promover representações mais inclusivas, o que alinha com o objetivo da proposição de combater o etarismo e valorizar os idosos. Seu discurso sugere que ela apoiaria a substituição do símbolo atual por uma imagem mais contemporânea e respeitosa.",
+    "tempo_segundos": 3.97,
+    "erro": null,
+    "gabarito": "A FAVOR",
+    "acertou": true
+  },
+  "pl_003_contra": {
+    "postura_inferida": "CONTRA",
+    "justificativa": "O deputado enfatiza a importância de priorizar políticas públicas com impacto concreto e mensurável, sugerindo que mudanças simbólicas, como a substituição do símbolo de atendimento prioritário, não seriam uma prioridade para ele. Ele defende o foco em áreas como saúde, educação e segurança, o que implica que mudanças simbólicas seriam consideradas secundárias.",
+    "tempo_segundos": 3.81,
+    "erro": null,
+    "gabarito": "CONTRA",
+    "acertou": true
+  },
+  "pl_004_a_favor": {
+    "postura_inferida": "A FAVOR",
+    "justificativa": "O deputado defende a responsabilização de quem usa a liberdade para atacar o que é sagrado para milhões e destaca a importância do respeito mútuo, o que alinha com os objetivos da proposição de proteger o Cristianismo e as religiões de matriz cristã contra condutas atentatórias e ofensas públicas.",
+    "tempo_segundos": 3.83,
+    "erro": null,
+    "gabarito": "A FAVOR",
+    "acertou": true
+  },
+  "pl_004_contra": {
+    "postura_inferida": "CONTRA",
+    "justificativa": "A deputada Juliana Rocha defende a liberdade de expressão e a separação entre religião e poder público, considerando que a proteção de crenças de críticas é uma forma de autoritarismo. Ela também destaca que o respeito não pode ser uma obrigação jurídica imposta pelo Estado.",
+    "tempo_segundos": 2.14,
+    "erro": null,
+    "gabarito": "CONTRA",
+    "acertou": true
+  }
+}

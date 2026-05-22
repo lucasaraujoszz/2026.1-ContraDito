@@ -1,0 +1,66 @@
+{
+  "pl_001_a_favor": {
+    "postura_inferida": "A FAVOR",
+    "justificativa": "O deputado defende a responsabilidade social do setor privado na prevenção de violências e considera que empresas devem zelar pela segurança dos seus clientes.",
+    "tempo_segundos": 19.48,
+    "erro": null,
+    "gabarito": "A FAVOR",
+    "acertou": true
+  },
+  "pl_001_contra": {
+    "postura_inferida": "CONTRA",
+    "justificativa": "O deputado defende a responsabilidade do Estado na segurança pública e critica a transferência de obrigações para o setor privado, como as impostas pela proposição.",
+    "tempo_segundos": 20.24,
+    "erro": null,
+    "gabarito": "CONTRA",
+    "acertou": true
+  },
+  "pl_002_a_favor": {
+    "postura_inferida": "A FAVOR",
+    "justificativa": "O deputado enfatiza a importância do tempo no tratamento de doenças com janelas terapêuticas estreitas e defende a priorização de casos onde o atraso causa danos irreversíveis. A proposição visa justamente garantir esse atendimento prioritário para pacientes com doenças neuromusculares.",
+    "tempo_segundos": 22.33,
+    "erro": null,
+    "gabarito": "A FAVOR",
+    "acertou": true
+  },
+  "pl_002_contra": {
+    "postura_inferida": "CONTRA",
+    "justificativa": "O deputado defende um SUS universal e equitativo, criticando a criação de 'atalhos' para alguns grupos. A proposição cria prioridade em atendimento para pessoas com doenças neuromusculares, o que contraria sua visão.",
+    "tempo_segundos": 21.59,
+    "erro": null,
+    "gabarito": "CONTRA",
+    "acertou": true
+  },
+  "pl_003_a_favor": {
+    "postura_inferida": "A FAVOR",
+    "justificativa": "O discurso enfatiza a importância de símbolos públicos refletirem a realidade atual e promoverem representações inclusivas, alinhado com o objetivo da proposição.",
+    "tempo_segundos": 19.07,
+    "erro": null,
+    "gabarito": "A FAVOR",
+    "acertou": true
+  },
+  "pl_003_contra": {
+    "postura_inferida": "CONTRA",
+    "justificativa": "O deputado prioriza políticas públicas com impacto material e mensurável, criticando pautas simbólicas em detrimento de áreas como saúde e educação. A proposição foca em mudança simbólica sem impacto direto na vida das pessoas.",
+    "tempo_segundos": 20.43,
+    "erro": null,
+    "gabarito": "CONTRA",
+    "acertou": true
+  },
+  "pl_004_a_favor": {
+    "postura_inferida": "A FAVOR",
+    "justificativa": "O deputado defende a responsabilização de quem ataca crenças religiosas e considera necessário proteger o que é sagrado para milhões, alinhando-se com os objetivos da proposição.",
+    "tempo_segundos": 20.59,
+    "erro": null,
+    "gabarito": "A FAVOR",
+    "acertou": true
+  },
+  "pl_004_contra": {
+    "postura_inferida": "CONTRA",
+    "justificativa": "O discurso defende a liberdade de expressão e o debate aberto, criticando qualquer tentativa de usar o Estado para proteger crenças de críticas. A proposição visa criminalizar condutas atentatórias contra o Cristianismo, o que contraria os valores defendidos pelo deputado.",
+    "tempo_segundos": 23.32,
+    "erro": null,
+    "gabarito": "CONTRA",
+    "acertou": true
+  }
+}

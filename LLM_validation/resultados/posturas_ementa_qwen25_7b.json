@@ -1,0 +1,66 @@
+{
+  "pl_001_a_favor": {
+    "postura_inferida": "A FAVOR",
+    "justificativa": "A deputada enfatiza a necessidade de responsabilidade social do setor privado na prevenção de violências, apoiando a ideia de que empresas têm o dever de zelar pelo bem-estar dos clientes em seus estabelecimentos.",
+    "gabarito": "A FAVOR",
+    "acertou": true,
+    "tempo_segundos": 17.78,
+    "erro": null
+  },
+  "pl_001_contra": {
+    "postura_inferida": "CONTRA",
+    "justificativa": "O deputado Carlos Mendes defende a não transferência de responsabilidades estatais para o setor privado e critica a criação de obrigações regulatórias adicionais, o que sugere uma postura contrária à proposição que cria um protocolo de atendimento específico para empresas privadas.",
+    "gabarito": "CONTRA",
+    "acertou": true,
+    "tempo_segundos": 9.62,
+    "erro": null
+  },
+  "pl_002_a_favor": {
+    "postura_inferida": "A FAVOR",
+    "justificativa": "O deputado enfatiza a importância do tratamento rápido para doenças com janela terapêutica estreita e defende o reconhecimento de urgências diferenciadas no SUS, sugerindo que votaria a favor da proposição que prioriza o tratamento de doenças neuromusculares com paralisia motora.",
+    "gabarito": "A FAVOR",
+    "acertou": true,
+    "tempo_segundos": 10.93,
+    "erro": null
+  },
+  "pl_002_contra": {
+    "postura_inferida": "CONTRA",
+    "justificativa": "A deputada expressou preocupação com a criação de mais exceções no SUS, preferindo uma abordagem que amplie a capacidade geral do sistema. Isso sugere que ela se oporia à proposição que cria prioridades epidemiológicas para doenças específicas.",
+    "gabarito": "CONTRA",
+    "acertou": true,
+    "tempo_segundos": 8.93,
+    "erro": null
+  },
+  "pl_003_a_favor": {
+    "postura_inferida": "A FAVOR",
+    "justificativa": "A deputada Helena Ferreira enfatiza a importância da atualização dos símbolos públicos para refletir a realidade contemporânea e promover inclusão, o que sugere uma postura favorável à substituição do símbolo em questão.",
+    "gabarito": "A FAVOR",
+    "acertou": true,
+    "tempo_segundos": 9.28,
+    "erro": null
+  },
+  "pl_003_contra": {
+    "postura_inferida": "CONTRA",
+    "justificativa": "O deputado enfatiza a necessidade de priorizar políticas públicas com efeitos concretos e mensuráveis, indicando que mudanças simbólicas devem vir depois das urgências. A substituição do símbolo proposta é considerada uma mudança simbólica sem impacto prático.",
+    "gabarito": "CONTRA",
+    "acertou": true,
+    "tempo_segundos": 9.78,
+    "erro": null
+  },
+  "pl_004_a_favor": {
+    "postura_inferida": "A FAVOR",
+    "justificativa": "O deputado defende a proteção das crenças religiosas, considerando-as alvo de ataques gratuitos e solicitando responsabilização para quem ofende o sagrado. Isso indica uma postura favorável à criminalização das condutas atentatórias contra o Cristianismo.",
+    "gabarito": "A FAVOR",
+    "acertou": true,
+    "tempo_segundos": 10.14,
+    "erro": null
+  },
+  "pl_004_contra": {
+    "postura_inferida": "CONTRA",
+    "justificativa": "O discurso enfatiza a importância da liberdade de expressão, separação entre religião e Estado e a construção democrática através do debate aberto. Essas ideias indicam que a deputada não apoia medidas que possam limitar esses princípios.",
+    "gabarito": "CONTRA",
+    "acertou": true,
+    "tempo_segundos": 9.17,
+    "erro": null
+  }
+}

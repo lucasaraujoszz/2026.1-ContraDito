@@ -1,0 +1,66 @@
+{
+  "pl_001_a_favor": {
+    "postura_inferida": "INDEFINIDO",
+    "justificativa": "<think>\nOkay, let's tackle this. The task is to determine whether the fictional Deputy Ana Silva from PSOL/SP would vote in favor or against the \"Protocolo Não é Não\" proposal based on her historical ",
+    "gabarito": "A FAVOR",
+    "acertou": false,
+    "tempo_segundos": 3.86,
+    "erro": "JSON inválido (fallback)"
+  },
+  "pl_001_contra": {
+    "postura_inferida": "INDEFINIDO",
+    "justificativa": "<think>\nOkay, let's see. The task is to determine whether the fictional Deputy Carlos Mendes would vote in favor or against the \"Protocolo Não é Não\" proposal based on his historical speech. The propo",
+    "gabarito": "CONTRA",
+    "acertou": false,
+    "tempo_segundos": 1.96,
+    "erro": "JSON inválido (fallback)"
+  },
+  "pl_002_a_favor": {
+    "postura_inferida": "INDEFINIDO",
+    "justificativa": "<think>\nOkay, let's tackle this. The task is to determine whether the fictional deputy Ricardo Almeida (PSB/RJ) would vote in favor or against the proposed bill that prioritizes the treatment of neuro",
+    "gabarito": "A FAVOR",
+    "acertou": false,
+    "tempo_segundos": 1.22,
+    "erro": "JSON inválido (fallback)"
+  },
+  "pl_002_contra": {
+    "postura_inferida": "INDEFINIDO",
+    "justificativa": "<think>\nOkay, let's tackle this. The task is to determine whether the fictional deputy Mariana Costa would vote in favor or against the proposed bill on prioritizing neuromuscular diseases with motor ",
+    "gabarito": "CONTRA",
+    "acertou": false,
+    "tempo_segundos": 1.86,
+    "erro": "JSON inválido (fallback)"
+  },
+  "pl_003_a_favor": {
+    "postura_inferida": "INDEFINIDO",
+    "justificativa": "<think>\nOkay, let's tackle this. The task is to determine whether the fictional deputy Helena Ferreira from the PT party in Bahia would vote in favor or against the proposition to replace the symbol o",
+    "gabarito": "A FAVOR",
+    "acertou": false,
+    "tempo_segundos": 2.43,
+    "erro": "JSON inválido (fallback)"
+  },
+  "pl_003_contra": {
+    "postura_inferida": "INDEFINIDO",
+    "justificativa": "<think>\nOkay, let's tackle this. The user wants to know if the fictional deputy José Santos would vote for or against the proposition to replace the symbol of an elderly person with a cane in priority",
+    "gabarito": "CONTRA",
+    "acertou": false,
+    "tempo_segundos": 2.07,
+    "erro": "JSON inválido (fallback)"
+  },
+  "pl_004_a_favor": {
+    "postura_inferida": "INDEFINIDO",
+    "justificativa": "<think>\nOkay, let's see. The task is to determine whether the fictional Deputy Pastor Marcos Ribeiro would vote in favor or against the proposition that criminalizes actions against Christianity and e",
+    "gabarito": "A FAVOR",
+    "acertou": false,
+    "tempo_segundos": 1.32,
+    "erro": "JSON inválido (fallback)"
+  },
+  "pl_004_contra": {
+    "postura_inferida": "INDEFINIDO",
+    "justificativa": "<think>\nOkay, let's see. The task is to determine whether the deputy would vote in favor or against the proposition based on her historical speech. The proposition is about criminalizing actions that ",
+    "gabarito": "CONTRA",
+    "acertou": false,
+    "tempo_segundos": 1.93,
+    "erro": "JSON inválido (fallback)"
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "parlamentares": {
+    "deputados": 600,
+    "senadores": 81,
+    "total": 681,
+    "estimativa_original": 594
+  },
+  "votacoes": {
+    "camara_bruto": 39536,
+    "camara_apos_plenario": 6202,
+    "camara_apos_pl_pec": 744,
+    "camara_primeira_vot": 0,
+    "senado_bruto": 408,
+    "senado_pl_pec": 154,
+    "senado_primeira_vot": 94,
+    "total_escopo": 94,
+    "estimativa_original": 250
+  },
+  "participacao": {
+    "taxa_presenca": 0.75,
+    "fonte": "fallback"
+  },
+  "estimativa_revisada": {
+    "pares_brutos": 64014,
+    "apos_presenca": 48010,
+    "apos_rn04": 36007,
+    "apos_rn01": 32406,
+    "apos_rn02": 19443,
+    "estimativa_final": 13610,
+    "estimativa_original": 42500,
+    "diferenca": -28890,
+    "nota": "RN01/RN02/<5 discursos são estimados — RN04 e presença são dados reais"
+  },
+  "gerado_em": "2026-05-21T12:10:36.496805"
+}

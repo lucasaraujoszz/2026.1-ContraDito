@@ -1,0 +1,66 @@
+{
+  "pl_001_a_favor": {
+    "postura_inferida": "A FAVOR",
+    "justificativa": "O discurso enfatiza a importância do setor privado assumir responsabilidades sociais na prevenção de violências, reconhecendo que empresas têm condições de zelar pelo bem-estar dos clientes em seus espaços. Isso alinha com os princípios da lei proposta, que estabelece deveres para estabelecimentos públicos em prol das vítimas de violência sexual.",
+    "tempo_segundos": 21.16,
+    "erro": null,
+    "gabarito": "A FAVOR",
+    "acertou": true
+  },
+  "pl_001_contra": {
+    "postura_inferida": "CONTRA",
+    "justificativa": "O deputado Carlos Mendes expressou preocupação com a transferência de responsabilidades estatais para o setor privado e defendeu que segurança pública é função do Estado. A proposição cria deveres para estabelecimentos comerciais, o que pode ser interpretado como uma transferência de responsabilidade.",
+    "tempo_segundos": 17.98,
+    "erro": null,
+    "gabarito": "CONTRA",
+    "acertou": true
+  },
+  "pl_002_a_favor": {
+    "postura_inferida": "A FAVOR",
+    "justificativa": "O deputado enfatiza a importância do tratamento imediato para doenças com janela terapêutica estreita, argumentando pela necessidade de priorização no SUS. A proposição visa justamente garantir prioridades no tratamento domiciliar para doenças críticas como as neuromusculares, alinhando-se com o discurso do deputado sobre eficiência e justiça no uso dos recursos públicos.",
+    "tempo_segundos": 21.84,
+    "erro": null,
+    "gabarito": "A FAVOR",
+    "acertou": true
+  },
+  "pl_002_contra": {
+    "postura_inferida": "CONTRA",
+    "justificativa": "O discurso enfatiza a preocupação com a fragmentação do SUS e defende uma solução baseada na ampliação de recursos e profissionais para todos, ao invés de criar prioridades específicas. Isso sugere que o deputado não apoia a criação de atalhos ou exceções no sistema de saúde.",
+    "tempo_segundos": 18.01,
+    "erro": null,
+    "gabarito": "CONTRA",
+    "acertou": true
+  },
+  "pl_003_a_favor": {
+    "postura_inferida": "A FAVOR",
+    "justificativa": "O discurso enfatiza a importância de atualizar representações visuais para refletir realidades contemporâneas e combater estereótipos, o que sugere apoio à proposição que visa modernizar o símbolo de atendimento prioritário para idosos.",
+    "tempo_segundos": 18.11,
+    "erro": null,
+    "gabarito": "A FAVOR",
+    "acertou": true
+  },
+  "pl_003_contra": {
+    "postura_inferida": "CONTRA",
+    "justificativa": "O deputado enfatiza a necessidade de priorizar políticas públicas que gerem benefícios concretos e mensuráveis, argumentando que mudanças simbólicas devem vir depois das urgências estruturais. A proposição proposta é vista como uma mudança simbólica sem impacto prático significativo.",
+    "tempo_segundos": 19.34,
+    "erro": null,
+    "gabarito": "CONTRA",
+    "acertou": true
+  },
+  "pl_004_a_favor": {
+    "postura_inferida": "A FAVOR",
+    "justificativa": "O deputado enfatiza a necessidade de respeito mútuo e responsabilização para aqueles que usam a liberdade de expressão para atacar crenças religiosas sagradas. Essa postura alinha-se com o objetivo da proposição de criminalizar ofensas públicas ao Cristianismo, apesar do discurso não mencionar explicitamente.",
+    "tempo_segundos": 20.05,
+    "erro": null,
+    "gabarito": "A FAVOR",
+    "acertou": true
+  },
+  "pl_004_contra": {
+    "postura_inferida": "CONTRA",
+    "justificativa": "O discurso enfatiza a importância da liberdade de expressão, separação entre religião e Estado, e o risco de uma mordaça legal. Essas ideias indicam que a deputada não apoia medidas que limitem críticas públicas à religião.",
+    "tempo_segundos": 17.08,
+    "erro": null,
+    "gabarito": "CONTRA",
+    "acertou": true
+  }
+}

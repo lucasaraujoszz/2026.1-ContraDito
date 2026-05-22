@@ -1,0 +1,66 @@
+{
+  "pl_001_a_favor": {
+    "postura_inferida": "A FAVOR",
+    "justificativa": "A deputada defende a responsabilidade social do setor privado na prevenção de violência, argumentando que empresas devem zelar pela segurança dos seus clientes. Essa postura alinha-se com a proposição que busca responsabilizar estabelecimentos por casos de violência.",
+    "gabarito": "A FAVOR",
+    "acertou": true,
+    "tempo_segundos": 19.38,
+    "erro": null
+  },
+  "pl_001_contra": {
+    "postura_inferida": "CONTRA",
+    "justificativa": "O deputado defende a responsabilidade do Estado na segurança pública e critica a transferência de obrigações para o setor privado, o que sugere resistência à proposição.",
+    "gabarito": "CONTRA",
+    "acertou": true,
+    "tempo_segundos": 9.23,
+    "erro": null
+  },
+  "pl_002_a_favor": {
+    "postura_inferida": "A FAVOR",
+    "justificativa": "O deputado enfatiza a importância do tempo no tratamento de doenças com janelas terapêuticas estreitas e critica o atraso no acesso à saúde, sugerindo a necessidade de priorização.",
+    "gabarito": "A FAVOR",
+    "acertou": true,
+    "tempo_segundos": 10.29,
+    "erro": null
+  },
+  "pl_002_contra": {
+    "postura_inferida": "CONTRA",
+    "justificativa": "A deputada argumenta contra a criação de prioridades no SUS, defendendo um sistema universal e equitativo. Sua crítica à 'disputa política' em detrimento da decisão técnica sugere oposição à proposição.",
+    "gabarito": "CONTRA",
+    "acertou": true,
+    "tempo_segundos": 10.24,
+    "erro": null
+  },
+  "pl_003_a_favor": {
+    "postura_inferida": "A FAVOR",
+    "justificativa": "A deputada enfatiza a importância de símbolos públicos refletirem a realidade atual e promoverem representações inclusivas, sugerindo apoio à atualização de símbolos que perpetuam estereótipos.",
+    "gabarito": "A FAVOR",
+    "acertou": true,
+    "tempo_segundos": 10.07,
+    "erro": null
+  },
+  "pl_003_contra": {
+    "postura_inferida": "CONTRA",
+    "justificativa": "O deputado enfatiza a necessidade de políticas públicas com impacto concreto e retorno mensurável, priorizando áreas como saúde e educação. A proposição, por sua vez, foca em uma mudança simbólica sem necessariamente trazer benefícios práticos.",
+    "gabarito": "CONTRA",
+    "acertou": true,
+    "tempo_segundos": 10.72,
+    "erro": null
+  },
+  "pl_004_a_favor": {
+    "postura_inferida": "A FAVOR",
+    "justificativa": "O deputado defende a responsabilização de quem ataca crenças religiosas, considerando ofensas deliberadas como algo que precisa ser punido. Ele busca proteção legal para comunidades religiosas, alinhando-se com a proposta.",
+    "gabarito": "A FAVOR",
+    "acertou": true,
+    "tempo_segundos": 11.27,
+    "erro": null
+  },
+  "pl_004_contra": {
+    "postura_inferida": "CONTRA",
+    "justificativa": "O discurso defende a liberdade de expressão e o Estado laico, criticando qualquer tentativa de criminalizar condutas atentatórias contra religiões. A deputada argumenta que o debate aberto e a convivência com diferenças são pilares da democracia.",
+    "gabarito": "CONTRA",
+    "acertou": true,
+    "tempo_segundos": 11.66,
+    "erro": null
+  }
+}

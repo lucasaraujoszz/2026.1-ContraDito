@@ -1,0 +1,66 @@
+{
+  "pl_001_a_favor": {
+    "postura_inferida": "A FAVOR",
+    "justificativa": "A deputada defende a responsabilidade social dos estabelecimentos em prevenir violências e considera que o setor privado não pode se omitir diante de violências que acontecem em ambientes sob sua gestão, o que sugere que ela apoiaria uma medida como o 'Protocolo Não é Não' para garantir a segurança das mulheres em locais de grande circulação de pessoas.",
+    "gabarito": "A FAVOR",
+    "acertou": true,
+    "tempo_segundos": 3.11,
+    "erro": null
+  },
+  "pl_001_contra": {
+    "postura_inferida": "CONTRA",
+    "justificativa": "O deputado defende que o Estado deve cumprir seu papel em garantir a segurança pública, e não transferir responsabilidades para o setor privado, o que sugere que ele não apoiaria a criação de um protocolo que onere os estabelecimentos privados com a responsabilidade de atendimento à mulher vítima de violência sexual ou assédio. Isso está alinhado com sua crítica à transferência de responsabilidades estatais para o setor privado.",
+    "gabarito": "CONTRA",
+    "acertou": true,
+    "tempo_segundos": 3.05,
+    "erro": null
+  },
+  "pl_002_a_favor": {
+    "postura_inferida": "A FAVOR",
+    "justificativa": "O deputado destaca a importância de priorizar doenças com janela terapêutica estreita e reconhece a necessidade de o sistema de saúde estar preparado para identificar e priorizar esses casos, o que alinha com a proposição sobre prioridade epidemiológica no tratamento de doenças neuromusculares com paralisia motora.",
+    "gabarito": "A FAVOR",
+    "acertou": true,
+    "tempo_segundos": 1.5,
+    "erro": null
+  },
+  "pl_002_contra": {
+    "postura_inferida": "CONTRA",
+    "justificativa": "A deputada Mariana Costa expressa preocupação com a fragmentação do SUS e defende que decisões sobre fluxo clínico devem ser técnicas, baseadas em protocolos médicos, e não imposições legislativas genéricas, o que sugere que ela não apoiaria a criação de prioridades epidemiológicas específicas para doenças neuromusculares. Ela defende um sistema de saúde universal e equitativo, sem privilégios setoriais.",
+    "gabarito": "CONTRA",
+    "acertou": true,
+    "tempo_segundos": 1.06,
+    "erro": null
+  },
+  "pl_003_a_favor": {
+    "postura_inferida": "A FAVOR",
+    "justificativa": "O discurso da deputada destaca a importância de atualizar símbolos públicos para refletir a realidade atual e promover representação mais inclusiva, o que sugere que ela apoiaria a substituição do símbolo indicativo para pessoas idosas. Além disso, ela enfatiza que isso não é uma questão de apagar direitos existentes, mas sim de representá-los de maneira mais contemporânea.",
+    "gabarito": "A FAVOR",
+    "acertou": true,
+    "tempo_segundos": 1.63,
+    "erro": null
+  },
+  "pl_003_contra": {
+    "postura_inferida": "CONTRA",
+    "justificativa": "O deputado enfatiza a importância de priorizar políticas públicas com efeitos concretos e mensuráveis, sugerindo que mudanças simbólicas, como a substituição de um símbolo, não devem ser priorizadas. Isso implica que ele provavelmente votaria contra a proposição, considerando-a uma medida de impacto simbólico em detrimento de soluções mais práticas e concretas.",
+    "gabarito": "CONTRA",
+    "acertou": true,
+    "tempo_segundos": 2.32,
+    "erro": null
+  },
+  "pl_004_a_favor": {
+    "postura_inferida": "A FAVOR",
+    "justificativa": "O deputado defende a responsabilização de quem usa a liberdade para atacar o que é sagrado para milhões e destaca a importância do respeito mútuo, o que sugere que ele apoia a proteção legal contra ofensas ao Cristianismo. Além disso, ele menciona que a dimensão religiosa da identidade não deve ficar desprotegida, reforçando a ideia de que ele votaria a favor da proposição.",
+    "gabarito": "A FAVOR",
+    "acertou": true,
+    "tempo_segundos": 1.66,
+    "erro": null
+  },
+  "pl_004_contra": {
+    "postura_inferida": "CONTRA",
+    "justificativa": "A deputada defende a liberdade de expressão e a separação entre religião e poder público, argumentando que o Estado não deve proteger crenças de críticas, o que sugere que ela se oporia à criminalização de condutas atentatórias contra o Cristianismo. Além disso, ela critica a ideia de impor respeito como obrigação jurídica, o que reforça a inferência de que ela votaria contra a proposição.",
+    "gabarito": "CONTRA",
+    "acertou": true,
+    "tempo_segundos": 1.98,
+    "erro": null
+  }
+}
