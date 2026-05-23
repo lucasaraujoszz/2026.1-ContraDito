@@ -1,57 +1,63 @@
-# Como Calculamos o Score de Coerência
+ # Entendendo o Score de Coerência
 
-O **Score de Coerência** é a principal métrica do ContraDito. Ele não é baseado em opiniões políticas, mas sim num cruzamento analítico, semântico e matemático entre o que o parlamentar afirma nos seus discursos e como ele efetivamente vota nos projetos de lei.
 
-Abaixo, detalhamos o passo a passo de como a nossa arquitetura de Inteligência Artificial e o nosso motor de busca vetorial chegam à nota final.
+O **Score de Coerência** é a principal métrica do ContraDito. Ele não é baseado em opiniões políticas ou viés ideológico, mas sim em um cruzamento analítico e matemático rigoroso entre as declarações públicas do parlamentar e suas ações no painel de votação eletrônico.
+
+
+Abaixo, detalhamos as regras de negócio e os critérios matemáticos que definem como essa pontuação é calculada.
+
+
+---
+
+
+## A Fórmula Matemática
+
+
+O índice de coerência de um parlamentar é calculado percentualmente, resultando em uma nota de **0 a 100**. A fórmula é baseada exclusivamente nos cruzamentos validados com sucesso pela nossa Inteligência Artificial:
+
+
+$$
+
+Score = \left( \frac{\text{Quantidade de Votos Coerentes}}{\text{Total de Votações Válidas Analisadas}} \right) \times 100
+
+$$
+
+
+### Critério de Votação Válida (Filtro do Denominador)
+
+
+Para garantir a precisão analítica e não penalizar parlamentares indevidamente, o sistema aplica um filtro estrito sobre o denominador da fórmula:
+
+
+* **Posicionamento Ativo Obrigatório:** Apenas votações em que o parlamentar expressou um posicionamento ativo no painel eletrônico, seja votando **"Sim"** ou **"Não"**, são consideradas votações válidas.
+
+* **Abstenções e Faltas:** Registros oficiais de **"Ausente"** ou **"Abstenção"** são rigorosamente ignorados pela IA. Eles não compõem o denominador da fórmula, evitando distorções no cálculo.
+
 
 ---
 
-## O Fluxo de Cálculo (Passo a Passo)
 
-### 1. Vetorização Semântica (O "Dito")
-Primeiro, coletamos os discursos oficiais do parlamentar na Câmara dos Deputados e no Senado. Após a limpeza de ruídos protocolares, o texto não é classificado por tags rígidas. Utilizamos o modelo **SBERT** (`paraphrase-multilingual-mpnet-base-v2`) para converter o discurso num **Embedding** (um vetor matemático de 768 dimensões).
-Este processo transforma o significado e a intenção da fala em coordenadas matemáticas, preservando nuances que uma simples tag ignoraria.
+## Estado de Ausência de Dados
 
-### 2. Mapeamento de Votos Oficiais (O "Feito")
-Em paralelo, o nosso banco de dados mapeia os votos nominais oficiais (Sim, Não ou Abstenção) em Projetos de Lei (PLs) e Propostas de Emenda à Constituição (PECs). Para garantir a precisão semântica e respeitar o limite de processamento da IA, utilizamos um modelo de linguagem (LLM) para gerar um **Resumo Executivo** que contenha o núcleo temático da matéria legislativa. Esse resumo é então convertido em um vetor matemático através do mesmo modelo de embeddings, garantindo que "Dito" e "Feito" falem a mesma linguagem matemática.
 
-### 3. O Cruzamento Matemático (O *Match*)
-O motor do ContraDito utiliza a extensão **`pgvector`** no Supabase para calcular a **Similaridade de Cosseno** entre os vetores.
+A plataforma necessita de massa de dados para que o cruzamento semântico seja estatisticamente relevante. Para lidar com recortes escassos, o sistema prevê o estado de **Ausência de Dados**:
 
-* Se a similaridade atinge nosso limiar rigoroso (threshold de 0.20), significa que o discurso e a lei tratam do mesmo assunto semântico.
-* O sistema recupera esse "par ideal" e aciona o **Llama 3** (rodando localmente) para inferir a consistência:
-    * **Coerência Positiva:** O discurso defende a pauta e o voto foi favorável (ou vice-versa).
-    * **Contradição (Incoerência):** O discurso aponta para um lado, mas o voto registrado foi na direção oposta.
 
-### 4. A Fórmula Matemática do Score
-O *Score de Coerência* é uma nota percentual de **[0 a 100]**, calculada com base no percentual de consistência nos cruzamentos validados pela busca vetorial. Registros de "Ausente" ou "Abstenção" são desconsiderados do cálculo base.
+* **Critério de Nulidade:** Políticos que não possuam volume suficiente de discursos na base de dados (ex: menos de 10% da média do banco) ou que possuam baixíssima participação nas votações listadas, não terão o perfil processado pela IA.
 
-*Fórmula:*
-**Score = (Quantidade de Votos Coerentes / Total de Votações Válidas Analisadas) * 100**
+* **Reflexo na Interface:** Para esses parlamentares, o `score_coerencia` é retornado como nulo pela API. No Front-end, o perfil é exibido com um indicador neutro (ex: "N/A" ou silhueta cinza). Isso impede que a plataforma emita um "Falso Incoerente" (Score 0) apenas por falta de registros de atividade legislativa.
 
-*Exemplo Prático:*
-> Se o sistema identificou 10 cruzamentos válidos com alta similaridade semântica para um deputado, e em 8 deles o parlamentar foi coerente entre fala e voto, o seu Score final será **80**.
 
 ---
+
 
 ## Limitações e Mitigações
 
-Para garantir que o Score de Coerência seja aplicado de forma justa e tecnicamente viável, o sistema adota os seguintes parâmetros:
 
-* **Mitigação - Recorte Temporal (Legislatura Vigente):** Para mitigar os efeitos de mudanças naturais de posicionamento que ocorrem ao longo de carreiras políticas extensas, o sistema limita a coleta e análise de dados ao período do mandato atual (últimos 4 anos - legislatura de 2023 a 2026). Essa estratégia garante que o parlamentar seja avaliado com base em sua atuação e discursos recentes, evitando que opiniões de legislaturas passadas distorçam a percepção de sua coerência no contexto político presente.
-
-* **Limitação - Premissa de Validade e Complexidade Regimental:** O sistema opera sob a premissa de que todos os discursos proferidos dentro do intervalo de 4 anos são fontes válidas e representativas da postura do parlamentar. Uma limitação do projeto é a não consideração de nuances do contexto político-regimental complexo, como manobras de obstrução ou votos em "Destaques", que podem forçar um posicionamento nominal divergente da retórica por questões puramente técnicas. O motor NLP foca estritamente na relação semântica entre o discurso público e o voto registrado, sem interpretar justificativas de manobras de bastidor.
-
----
-
-## Os Bastidores do Passo 1: O Script de Extração (Seeder)
-
-Para garantir que o processamento vetorial não seja prejudicado por ruídos protocolares (como "Obrigado, Sr. Presidente"), aplicamos regras de negócio diretamente no código de extração:
-
-1. **Filtro de Relevância:** O script ignora automaticamente qualquer transcrição excessivamente curta (abaixo de 150 caracteres).
-2. **Preparação de Dados:** O objeto do político é inicializado e as tabelas de provas são preparadas para receber os novos cruzamentos.
-3. **Idempotência (Upsert):** Utilizamos a função `.upsert()` para garantir que atualizações de discursos não gerem duplicidade de registros.
-
-**Trecho de destaque (Filtro de Ruído em Python):**
+Para garantir que o cálculo seja justo e tecnicamente viável, o sistema adota os seguintes parâmetros complementares:
 
 
+* **Recorte Temporal (Legislatura Vigente):** Para mitigar os efeitos de mudanças naturais de posicionamento ao longo de carreiras extensas, o sistema limita a coleta de dados ao período do mandato atual (2023 a 2026). Isso garante que o parlamentar seja avaliado com base em sua atuação recente.
+
+
+----
