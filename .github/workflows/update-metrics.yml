@@ -1,0 +1,38 @@
+name: Update Productivity Metrics
+
+on:
+  schedule:
+    # Roda todos os dias à meia-noite (UTC)
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+
+jobs:
+  update-metrics:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r docs/productivity/requirements.txt
+
+      - name: Run metrics script
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python docs/productivity/collect_metrics.py
+
+      - name: Commit and push changes
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add docs/docs/productivity/metrics.json
+          git commit -m "chore: update productivity metrics [skip ci]" || echo "No changes to commit"
+          git push

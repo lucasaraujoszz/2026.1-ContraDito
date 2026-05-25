@@ -11,7 +11,8 @@ export default function DossiePolitico({ params }: { params: Promise<{ id: strin
   const [carregando, setCarregando] = useState(true);
 
   useEffect(() => {
-    fetch(`http://localhost:8000/api/politicos/${idDoPolitico}`)
+    // Rota corrigida para alinhar com o endpoint do seu backend Python
+    fetch(`http://localhost:8000/politicos/${idDoPolitico}`)
       .then((resposta) => resposta.json())
       .then((dadosDoApi) => {
         console.log("ESPIÃO DE DADOS:", dadosDoApi);

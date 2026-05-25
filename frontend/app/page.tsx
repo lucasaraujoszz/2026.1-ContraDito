@@ -35,7 +35,9 @@ export default function Home() {
     fetch(url)
       .then((resposta) => resposta.json())
       .then((dados) => {
-        setPoliticos(dados.itens || []);
+        // CORREÇÃO: Verifica dinamicamente o formato de resposta da API
+        const lista = Array.isArray(dados) ? dados : (dados.itens || []);
+        setPoliticos(lista);
         setCarregando(false);
       })
       .catch((erro) => {

@@ -1,14 +1,18 @@
 import os
 import json
-from datetime import datetime, timezone, timedelta
+from datetime import datetime, timezone
 from collections import defaultdict
 from github import Github, Auth
+
+
+def week_label(dt):
+    return dt.strftime("%Y-W%V")
+
 
 def main():
     token = os.environ.get("GITHUB_TOKEN")
     repo_name = os.environ.get("GITHUB_REPOSITORY", "unb-mds/2026.1-ContraDito")
-    
-    # Base structure
+
     metrics = {
         "generated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "repository": repo_name,
@@ -24,223 +28,251 @@ def main():
         "lead_time_issues_by_label": [],
         "code_churn_per_week": [],
         "commit_types_distribution": [],
-        "bus_factor_risk": []
+        "velocity": [],
+        "individual_stats": [],
+        "commit_chars_per_week": [],
     }
-    
+
+    output_path = os.path.join(os.path.dirname(__file__), "..", "docs", "productivity", "metrics.json")
+
     if not token:
-        print("GITHUB_TOKEN não encontrado. Gerando dados mockados para teste local.")
-        # Se não houver token, manter os arrays vazios (ou usar o mock)
-        output_path = os.path.join(os.path.dirname(__file__), "..", "docs", "productivity", "metrics.json")
+        print("GITHUB_TOKEN não encontrado. Gerando arquivo vazio para teste local.")
         with open(output_path, "w") as f:
             json.dump(metrics, f, indent=2)
         return
 
     print(f"Conectando ao repositório {repo_name}...")
-    auth = Auth.Token(token)
-    g = Github(auth=auth)
+    g = Github(auth=Auth.Token(token))
     repo = g.get_repo(repo_name)
-    
-    # 1. Commits Analysis (from 'develop' branch)
-    print("Processando commits da branch develop (isso pode levar alguns segundos)...")
+
+    # ── 1. Commits ────────────────────────────────────────────────────────────
+    print("Processando commits...")
     try:
         commits = repo.get_commits(sha="develop")
     except Exception as e:
-        print(f"Erro ao buscar branch 'develop', tentando default: {e}")
+        print(f"Branch 'develop' não encontrada, usando padrão: {e}")
         commits = repo.get_commits()
-        
+
     commit_counts = defaultdict(int)
     commit_types = defaultdict(int)
     msg_lengths = {"0-20": 0, "21-50": 0, "51-100": 0, "101-200": 0, "200+": 0}
     heatmap = defaultdict(int)
     coauthors_weekly = defaultdict(int)
     churn_weekly = defaultdict(lambda: {"additions": 0, "deletions": 0, "modifications": 0})
-    
-    # Fetching only the last 300 commits to avoid rate limiting for now
-    count = 0
-    for commit in commits:
-        if count > 300:
+    chars_weekly = defaultdict(lambda: {"total": 0, "count": 0})
+
+    for i, commit in enumerate(commits):
+        if i >= 300:
             break
-        count += 1
-        
-        # Committer
-        author = commit.author
-        if author:
-            commit_counts[author.login] += 1
-            
-        # Commit message types (conventional commits)
+
+        if commit.author:
+            commit_counts[commit.author.login] += 1
+
         msg = commit.commit.message
-        msg_lower = msg.lower()
-        if msg_lower.startswith('feat'): commit_types['feat'] += 1
-        elif msg_lower.startswith('fix'): commit_types['fix'] += 1
-        elif msg_lower.startswith('docs'): commit_types['docs'] += 1
-        elif msg_lower.startswith('chore'): commit_types['chore'] += 1
-        elif msg_lower.startswith('refactor'): commit_types['refactor'] += 1
-        elif msg_lower.startswith('test'): commit_types['test'] += 1
-        else: commit_types['other'] += 1
+        first_line = msg.split("\n")[0]
+        fl_lower = first_line.lower()
 
-        # Message Histogram
-        l = len(msg)
-        if l <= 20: msg_lengths["0-20"] += 1
-        elif l <= 50: msg_lengths["21-50"] += 1
-        elif l <= 100: msg_lengths["51-100"] += 1
-        elif l <= 200: msg_lengths["101-200"] += 1
-        else: msg_lengths["200+"] += 1
+        if fl_lower.startswith("feat"):
+            commit_types["feat"] += 1
+        elif fl_lower.startswith("fix"):
+            commit_types["fix"] += 1
+        elif fl_lower.startswith("docs"):
+            commit_types["docs"] += 1
+        elif fl_lower.startswith("chore"):
+            commit_types["chore"] += 1
+        elif fl_lower.startswith("refactor"):
+            commit_types["refactor"] += 1
+        elif fl_lower.startswith("test"):
+            commit_types["test"] += 1
+        else:
+            commit_types["other"] += 1
 
-        # Heatmap
+        ln = len(first_line)
+        if ln <= 20:
+            msg_lengths["0-20"] += 1
+        elif ln <= 50:
+            msg_lengths["21-50"] += 1
+        elif ln <= 100:
+            msg_lengths["51-100"] += 1
+        elif ln <= 200:
+            msg_lengths["101-200"] += 1
+        else:
+            msg_lengths["200+"] += 1
+
         dt = commit.commit.author.date
-        day = dt.weekday()
-        hour = dt.hour
-        heatmap[(day, hour)] += 1
+        w = week_label(dt)
+        heatmap[(dt.weekday(), dt.hour)] += 1
+        coauthors_weekly[w] += msg.lower().count("co-authored-by:")
+        chars_weekly[w]["total"] += ln
+        chars_weekly[w]["count"] += 1
 
-        # Co-authors
-        week = dt.strftime("%Y-W%V")
-        coauthors_weekly[week] += msg_lower.count("co-authored-by:")
-        
-        # Code Churn (Limited to first 50 commits due to API constraints)
-        if count <= 50 and commit.stats:
-            churn_weekly[week]["additions"] += commit.stats.additions
-            churn_weekly[week]["deletions"] += commit.stats.deletions
-            churn_weekly[week]["modifications"] += commit.stats.total - commit.stats.additions - commit.stats.deletions
+        # Code churn limited to first 50 commits (API rate constraint)
+        if i < 50 and commit.stats:
+            churn_weekly[w]["additions"] += commit.stats.additions
+            churn_weekly[w]["deletions"] += commit.stats.deletions
+            churn_weekly[w]["modifications"] += (
+                commit.stats.total - commit.stats.additions - commit.stats.deletions
+            )
 
-    for range_k, c in msg_lengths.items():
-        if c > 0:
-            metrics["commit_message_histogram"].append({"range": range_k, "count": c})
-            
-    for (day, hour), c in heatmap.items():
-        metrics["commit_heatmap"].append({"day": day, "hour": hour, "count": c})
-        
-    for week, c in sorted(coauthors_weekly.items()):
-        metrics["coauthors_per_week"].append({"week": week, "count": c})
-        
-    for week, data in sorted(churn_weekly.items()):
-        metrics["code_churn_per_week"].append({"week": week, **data})
+    metrics["commit_message_histogram"] = [
+        {"range": r, "count": c} for r, c in msg_lengths.items() if c > 0
+    ]
+    metrics["commit_heatmap"] = [
+        {"day": d, "hour": h, "count": c} for (d, h), c in heatmap.items()
+    ]
+    metrics["coauthors_per_week"] = [
+        {"week": w, "count": c} for w, c in sorted(coauthors_weekly.items())
+    ]
+    metrics["code_churn_per_week"] = [
+        {"week": w, **data} for w, data in sorted(churn_weekly.items())
+    ]
+    metrics["top_committers"] = [
+        {"username": u, "name": u, "commits": c}
+        for u, c in sorted(commit_counts.items(), key=lambda x: x[1], reverse=True)[:10]
+    ]
+    metrics["commit_types_distribution"] = [
+        {"type": t, "count": c} for t, c in commit_types.items() if c > 0
+    ]
+    metrics["commit_chars_per_week"] = [
+        {
+            "week": w,
+            "avg_chars": round(d["total"] / d["count"], 1),
+            "total_commits": d["count"],
+        }
+        for w, d in sorted(chars_weekly.items())
+        if d["count"] > 0
+    ]
 
-    for username, c in sorted(commit_counts.items(), key=lambda item: item[1], reverse=True)[:10]:
-        metrics["top_committers"].append({
-            "username": username,
-            "name": username,
-            "commits": c
-        })
-        
-    for c_type, c in commit_types.items():
-        if c > 0:
-            metrics["commit_types_distribution"].append({
-                "type": c_type,
-                "count": c
-            })
-
-    # 2. Issues Analysis (Open/Closed)
-    print("Processando issues (isso pode levar alguns segundos)...")
-    issues = repo.get_issues(state='all')
+    # ── 2. Issues ─────────────────────────────────────────────────────────────
+    print("Processando issues...")
     issues_by_week = defaultdict(lambda: {"opened": 0, "closed": 0})
     issue_contributors = defaultdict(lambda: {"opened": 0, "closed": 0, "total": 0})
     lead_time_by_label = defaultdict(list)
-    
-    count = 0
-    for issue in issues:
-        if count > 200:
+
+    for i, issue in enumerate(repo.get_issues(state="all")):
+        if i >= 200:
             break
-        count += 1
-        
-        # Evitar N+1 API calls verificando a URL em vez de issue.pull_request
         if "/pull/" in issue.html_url:
-            continue # Ignore PRs here
-            
-        week = issue.created_at.strftime("%Y-W%V")
-        issues_by_week[week]["opened"] += 1
-        
+            continue
+
+        w = week_label(issue.created_at)
+        issues_by_week[w]["opened"] += 1
         if issue.user:
             issue_contributors[issue.user.login]["opened"] += 1
             issue_contributors[issue.user.login]["total"] += 1
-        
-        if issue.state == 'closed' and issue.closed_at:
-            close_week = issue.closed_at.strftime("%Y-W%V")
-            issues_by_week[close_week]["closed"] += 1
+
+        if issue.state == "closed" and issue.closed_at:
+            cw = week_label(issue.closed_at)
+            issues_by_week[cw]["closed"] += 1
             if issue.closed_by:
                 issue_contributors[issue.closed_by.login]["closed"] += 1
                 issue_contributors[issue.closed_by.login]["total"] += 1
-                
-            # Lead time por label
-            days_to_close = (issue.closed_at - issue.created_at).total_seconds() / 86400.0
+
+            days = (issue.closed_at - issue.created_at).total_seconds() / 86400.0
             for label in issue.labels:
-                lead_time_by_label[label.name].append(days_to_close)
+                lead_time_by_label[label.name].append(days)
 
-    for week, counts in sorted(issues_by_week.items())[-10:]:
-        metrics["issues_per_week"].append({
-            "week": week,
-            "opened": counts["opened"],
-            "closed": counts["closed"]
-        })
-        
-    for username, counts in sorted(issue_contributors.items(), key=lambda item: item[1]['total'], reverse=True)[:10]:
-        metrics["top_issue_contributors"].append({
-            "username": username,
-            "name": username,
-            "opened": counts["opened"],
-            "closed": counts["closed"],
-            "total": counts["total"]
-        })
-        
-    for label_name, times in lead_time_by_label.items():
-        if times:
-            avg_days = sum(times) / len(times)
-            metrics["lead_time_issues_by_label"].append({
-                "label": label_name,
-                "avg_days_to_close": round(avg_days, 1)
-            })
+    sorted_issue_weeks = sorted(issues_by_week.keys())
+    metrics["issues_per_week"] = [
+        {"week": w, "opened": issues_by_week[w]["opened"], "closed": issues_by_week[w]["closed"]}
+        for w in sorted_issue_weeks[-10:]
+    ]
+    metrics["top_issue_contributors"] = [
+        {"username": u, "name": u, **{k: d[k] for k in ("opened", "closed", "total")}}
+        for u, d in sorted(issue_contributors.items(), key=lambda x: x[1]["total"], reverse=True)[:10]
+    ]
+    metrics["lead_time_issues_by_label"] = [
+        {"label": lbl, "avg_days_to_close": round(sum(times) / len(times), 1)}
+        for lbl, times in lead_time_by_label.items()
+        if times
+    ]
 
-    # 3. Pull Requests Analysis
-    print("Processando PRs (isso pode levar alguns segundos)...")
-    prs = repo.get_pulls(state='all')
+    # Velocity: issues closed per week + 4-week rolling average
+    velocity = []
+    for i, w in enumerate(sorted_issue_weeks):
+        closed = issues_by_week[w]["closed"]
+        window = [
+            issues_by_week[sorted_issue_weeks[j]]["closed"]
+            for j in range(max(0, i - 3), i + 1)
+        ]
+        velocity.append({
+            "week": w,
+            "issues_closed": closed,
+            "rolling_avg": round(sum(window) / len(window), 1),
+        })
+    metrics["velocity"] = velocity[-10:]
+
+    # ── 3. Pull Requests & Reviews ────────────────────────────────────────────
+    print("Processando PRs e reviews...")
     pr_authors = defaultdict(int)
+    pr_merged_by = defaultdict(int)
     pr_merge_times_by_week = defaultdict(list)
-    
-    count = 0
-    for pr in prs:
-        if count > 100:
+    review_matrix = defaultdict(int)   # (reviewer, author) → approved count
+    pr_reviewed_by = defaultdict(int)  # reviewer → reviews given
+
+    for i, pr in enumerate(repo.get_pulls(state="all")):
+        if i >= 100:
             break
-        count += 1
-        
+
         pr_author = pr.user.login if pr.user else "unknown"
         if pr.user:
             pr_authors[pr_author] += 1
-            
+
         if pr.merged_at and pr.created_at:
-            week = pr.merged_at.strftime("%Y-W%V")
-            hours = (pr.merged_at - pr.created_at).total_seconds() / 3600.0
-            pr_merge_times_by_week[week].append(hours)
-            
-    for username, c in sorted(pr_authors.items(), key=lambda item: item[1], reverse=True)[:10]:
-        metrics["top_pr_authors"].append({
-            "username": username,
-            "name": username,
-            "prs_opened": c
-        })
+            w = week_label(pr.merged_at)
+            pr_merge_times_by_week[w].append(
+                (pr.merged_at - pr.created_at).total_seconds() / 3600.0
+            )
+            if pr.merged_by:
+                pr_merged_by[pr.merged_by.login] += 1
 
-    for week, times in sorted(pr_merge_times_by_week.items())[-10:]:
-        if times:
-            avg_hours = sum(times) / len(times)
-            metrics["pull_requests_time_to_merge"].append({
-                "week": week,
-                "avg_hours": round(avg_hours, 1)
-            })
+        try:
+            for review in pr.get_reviews():
+                if review.state == "APPROVED" and review.user:
+                    reviewer = review.user.login
+                    review_matrix[(reviewer, pr_author)] += 1
+                    pr_reviewed_by[reviewer] += 1
+        except Exception:
+            pass
 
-    # Bus Factor Approximation
-    if metrics["top_committers"]:
-        total_commits_counted = sum(c["commits"] for c in metrics["top_committers"])
-        if total_commits_counted > 0:
-            for top_dev in metrics["top_committers"]:
-                ownership = (top_dev["commits"] / total_commits_counted) * 100
-                metrics["bus_factor_risk"].append({
-                    "module": "Repositório Inteiro",
-                    "top_contributor": top_dev["username"],
-                    "ownership_percentage": round(ownership, 1)
-                })
+    metrics["top_pr_authors"] = [
+        {"username": u, "name": u, "prs_opened": c}
+        for u, c in sorted(pr_authors.items(), key=lambda x: x[1], reverse=True)[:10]
+    ]
+    metrics["pull_requests_time_to_merge"] = [
+        {"week": w, "avg_hours": round(sum(times) / len(times), 1)}
+        for w, times in sorted(pr_merge_times_by_week.items())[-10:]
+        if times
+    ]
+    metrics["code_review_matrix"] = [
+        {"reviewer": rev, "author": auth, "approved_prs": c}
+        for (rev, auth), c in review_matrix.items()
+    ]
 
-    output_path = os.path.join(os.path.dirname(__file__), "..", "docs", "productivity", "metrics.json")
+    # ── 4. Individual Stats ───────────────────────────────────────────────────
+    all_users = set(commit_counts) | set(pr_authors) | set(issue_contributors)
+    metrics["individual_stats"] = sorted(
+        [
+            {
+                "username": u,
+                "name": u,
+                "commits": commit_counts.get(u, 0),
+                "prs_opened": pr_authors.get(u, 0),
+                "prs_reviewed": pr_reviewed_by.get(u, 0),
+                "prs_merged": pr_merged_by.get(u, 0),
+                "issues_opened": issue_contributors[u]["opened"],
+                "issues_closed": issue_contributors[u]["closed"],
+            }
+            for u in all_users
+        ],
+        key=lambda x: x["commits"],
+        reverse=True,
+    )
+
     with open(output_path, "w") as f:
         json.dump(metrics, f, indent=2)
-    print(f"Métricas coletadas e salvas em {output_path}")
+    print(f"Métricas salvas em {output_path}")
+
 
 if __name__ == "__main__":
     main()

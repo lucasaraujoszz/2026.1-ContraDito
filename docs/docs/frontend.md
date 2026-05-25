@@ -6,7 +6,7 @@ A interface do **ContraDito** foi projetada com foco na experiência do usuário
 
 O frontend foi construído utilizando **Next.js** com **React** e estilizado via **Tailwind CSS**. A estrutura de pastas segue o padrão moderno *App Router*:
 
-* **Tela Inicial (O Diretório):** O arquivo `app/page.tsx` abriga a capa principal (Hero Section), a barra de busca com filtros cruzados (Partido/UF) e o ranking de políticos.
+* **Tela Inicial (O Diretório):** O arquivo `app/page.tsx` abriga a capa principal, a barra de busca com filtros cruzados (Partido/UF) e o ranking de políticos.
   * **Integração API:** Consome a rota `GET /api/politicos`.
 * **Dossiê do Político (Rota Dinâmica):** O arquivo `app/politico/[id]/page.tsx` abriga a tela detalhada em formato *split* ou vertical, listando o histórico de discursos e as evidências (contradições) daquele parlamentar específico.
   * **Integração API:** Consome a rota `GET /api/politicos/{id_parlamentar}`.
