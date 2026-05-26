@@ -42,11 +42,11 @@
 
 ### Requisitos Não Funcionais
 
-- **RNF03 – Modelo de Embeddings:** Uso obrigatório do `BAAI/bge-m3` — janela de 8.192 tokens sem truncamento, alta precisão para PT-BR.
-- **RNF04 – Saída Estruturada (JSON):** O LLM deve retornar exclusivamente JSON válido com as chaves exatas. Qualquer desvio é tratado como falha de inferência.
-- **RNF05 – Orquestração via LangChain:** O pipeline de recuperação, formatação de prompt e inferência é gerenciado pelo LangChain.
-- **RNF06 – Estratégia de Fragmentação:** Uso do `RecursiveCharacterTextSplitter` calibrado para otimização do orçamento de tokens do prompt.
-- **RNF07 – Motor de Inferência Agnóstico:** Alternância de provedor (local ou API externa) exclusivamente via variável de ambiente `LLM_PROVIDER`.
+- **RNF01 – Modelo de Embeddings:** Uso obrigatório do `BAAI/bge-m3` — janela de 8.192 tokens sem truncamento, alta precisão para PT-BR.
+- **RNF02 – Saída Estruturada (JSON):** O LLM deve retornar exclusivamente JSON válido com as chaves exatas. Qualquer desvio é tratado como falha de inferência.
+- **RNF03 – Orquestração via LangChain:** O pipeline de recuperação, formatação de prompt e inferência é gerenciado pelo LangChain.
+- **RNF04 – Estratégia de Fragmentação:** Uso do `RecursiveCharacterTextSplitter` calibrado para otimização do orçamento de tokens do prompt.
+- **RNF05 – Motor de Inferência Agnóstico:** Alternância de provedor (local ou API externa) exclusivamente via variável de ambiente `LLM_PROVIDER`.
 
 ---
 
@@ -59,11 +59,11 @@
 - **RF16 – Destaques da Home:** Exibição de um ranking (ex: *Top 5 mais coerentes*).
 - **RF17 – Ordenação Padrão:** Listagem inicial ordenada de forma decrescente pelo Score de Coerência.
 - **RF18 – Filtros via Dropdown Fechado:** A API valida filtros exatos. O front-end usa *dropdowns* fechados para garantir que o usuário só busque por partidos, cargos e UFs existentes no sistema.
-- **RF34 – Busca Aproximada (Fuzzy Search):** Tolerância a erros ortográficos na pesquisa de parlamentares.
+- **RF31 – Busca Aproximada (Fuzzy Search):** Tolerância a erros ortográficos na pesquisa de parlamentares.
 
 ### Requisitos Não Funcionais
 
-- **RNF08 – Paginação (Lazy Loading):** A listagem e o filtro de políticos são paginados pela FastAPI para evitar sobrecarga no navegador.
+- **RNF06 – Paginação (Lazy Loading):** A listagem e o filtro de políticos são paginados pela FastAPI para evitar sobrecarga no navegador.
 
 ---
 
@@ -79,12 +79,12 @@
 
 ### Regras de Negócio
 
-- **RN09 – Fórmula do Score:** `(Votos Coerentes / Total de Votações Válidas Analisadas) × 100`.
-- **RN10 – Critério de Votação Válida:** Apenas votos "Sim" e "Não" compõem o denominador. "Ausente", "Abstenção" e "Obstrução" são ignorados.
+- **RN08 – Fórmula do Score:** `(Votos Coerentes / Total de Votações Válidas Analisadas) × 100`.
+- **RN09 – Critério de Votação Válida:** Apenas votos "Sim" e "Não" compõem o denominador. "Ausente", "Abstenção" e "Obstrução" são ignorados.
 
 ### Requisitos Não Funcionais
 
-- **RNF08 – Transparência da Atualização:** A interface exibe a data da *Última Atualização dos Dados* para o usuário entender a frescura do Score.
+- **RNF07 – Transparência da Atualização:** A interface exibe a data da *Última Atualização dos Dados* para o usuário entender a frescura do Score.
 
 ---
 
@@ -105,13 +105,13 @@
 
 ### Requisitos Não Funcionais
 
-- **RNF09 – Macroarquitetura CQRS:** FastAPI exclusiva para leitura; Worker NLP isolado para escrita e processamento. Comunicação entre os dois lados é estritamente assíncrona via banco de dados e Redis, sem chamadas HTTP diretas.
-- **RNF10 – Resiliência do Worker:** Lentidão ou falha no Worker não pode afetar a FastAPI. O Worker gerencia seus próprios timeouts e aborta o processamento de parlamentares problemáticos individualmente, prosseguindo para o próximo.
-- **RNF11 – Performance Vetorial (HNSW):** O Supabase usa o índice HNSW para busca vetorial por similaridade de cosseno em larga escala e baixa latência.
-- **RNF12 – LGPD e Transparência:** Página estática no portal explicando de forma clara que os dados são públicos e como a IA calcula o Score.
-- **RNF13 – Cache de Leitura:** Requisições estáticas e buscas exatas são cacheadas em memória com TTL definido para aliviar o banco.
-- **RNF14 – Otimização de Build Docker:** O Dockerfile do Worker usa *Layer Caching* para isolar dependências pesadas de IA do código-fonte, mantendo builds ágeis.
-- **RNF15 – Filas Assíncronas (Celery):** O Worker usa Celery para gerenciar rotinas pesadas em background com suporte a retentativas automáticas.
+- **RNF08 – Macroarquitetura CQRS:** FastAPI exclusiva para leitura; Worker NLP isolado para escrita e processamento. Comunicação entre os dois lados é estritamente assíncrona via banco de dados e Redis, sem chamadas HTTP diretas.
+- **RNF09 – Resiliência do Worker:** Lentidão ou falha no Worker não pode afetar a FastAPI. O Worker gerencia seus próprios timeouts e aborta o processamento de parlamentares problemáticos individualmente, prosseguindo para o próximo.
+- **RNF10 – Performance Vetorial (HNSW):** O Supabase usa o índice HNSW para busca vetorial por similaridade de cosseno em larga escala e baixa latência.
+- **RNF11 – LGPD e Transparência:** Página estática no portal explicando de forma clara que os dados são públicos e como a IA calcula o Score.
+- **RNF12 – Cache de Leitura:** Requisições estáticas e buscas exatas são cacheadas em memória com TTL definido para aliviar o banco.
+- **RNF13 – Otimização de Build Docker:** O Dockerfile do Worker usa *Layer Caching* para isolar dependências pesadas de IA do código-fonte, mantendo builds ágeis.
+- **RNF14 – Filas Assíncronas (Celery):** O Worker usa Celery para gerenciar rotinas pesadas em background com suporte a retentativas automáticas.
 
 ---
 
@@ -126,9 +126,9 @@
 
 ### Requisitos Não Funcionais
 
-- **RNF16 – Responsividade Mobile First:** Layout adaptável; a tela de comparação (split screen) é empilhada verticalmente em dispositivos móveis.
-- **RNF17 – Contraste e Acessibilidade Visual (WCAG AA):** As paletas de cores do Score (verde/vermelho) garantem contraste legível sobre o fundo escuro (`bg-slate-900`), incluindo para daltônicos.
-- **RNF18 – Navegação ARIA:** Todos os elementos interativos suportam navegação por teclado (Tab) e atributos ARIA para leitores de tela.
-- **RNF19 – Otimização de Imagens (Next/Image):** O componente `<Image/>` do Next.js gerencia automaticamente cache, compressão WebP e *lazy loading* das fotos dos parlamentares.
-- **RNF20 – Design System Modular:** Componentes como "Card do Político" e "Barra do Score" são criados de forma isolada e reutilizável, garantindo consistência visual em todo o sistema.
-- **RNF21 – Estética Dark Glassmorphism:** O Design System usa fundos escuros com efeitos de vidro translúcido como linguagem visual principal.
+- **RNF15 – Responsividade Mobile First:** Layout adaptável; a tela de comparação (split screen) é empilhada verticalmente em dispositivos móveis.
+- **RNF16 – Contraste e Acessibilidade Visual (WCAG AA):** As paletas de cores do Score (verde/vermelho) garantem contraste legível sobre o fundo escuro (`bg-slate-900`), incluindo para daltônicos.
+- **RNF17 – Navegação ARIA:** Todos os elementos interativos suportam navegação por teclado (Tab) e atributos ARIA para leitores de tela.
+- **RNF18 – Otimização de Imagens (Next/Image):** O componente `<Image/>` do Next.js gerencia automaticamente cache, compressão WebP e *lazy loading* das fotos dos parlamentares.
+- **RNF19 – Design System Modular:** Componentes como "Card do Político" e "Barra do Score" são criados de forma isolada e reutilizável, garantindo consistência visual em todo o sistema.
+- **RNF20 – Estética Dark Glassmorphism:** O Design System usa fundos escuros com efeitos de vidro translúcido como linguagem visual principal.
