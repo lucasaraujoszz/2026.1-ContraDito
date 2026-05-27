@@ -41,23 +41,27 @@
        COMO FUNCIONA
   ══════════════════════════════════════ -->
   <p class="section-title">Como funciona</p>
-  <p class="section-subtitle">Três etapas transformam dados brutos governamentais em inteligência política auditável.</p>
+  <p class="section-subtitle">Três etapas transformam dados brutos governamentais em inteligência política auditável.
+  </p>
 
   <div class="pipeline-grid">
     <div class="pipeline-card">
       <div class="pipeline-number">01</div>
       <h3>Ingestão (ETL)</h3>
-      <p>Extração automática de discursos, proposições e votos das APIs oficiais da Câmara e do Senado, com higienização rigorosa dos textos.</p>
+      <p>Extração automática de discursos, proposições e votos das APIs oficiais da Câmara e do Senado, com higienização
+        rigorosa dos textos.</p>
     </div>
     <div class="pipeline-card">
       <div class="pipeline-number">02</div>
       <h3>Motor NLP e RAG</h3>
-      <p>Os discursos são vetorizados com <strong>BGE-M3</strong> e cruzados semanticamente com as matérias votadas via busca vetorial no Supabase.</p>
+      <p>Os discursos são vetorizados com <strong>BGE-M3</strong> e cruzados semanticamente com as matérias votadas via
+        busca vetorial no Supabase.</p>
     </div>
     <div class="pipeline-card">
       <div class="pipeline-number">03</div>
       <h3>Score de Coerência</h3>
-      <p>O <strong>Llama 3.1 8B</strong> analisa o contexto e emite um veredito. O resultado é exibido ao cidadão como uma métrica de 0 a 100.</p>
+      <p>O <strong>Llama 3.1 8B</strong> analisa o contexto e emite um veredito. O resultado é exibido ao cidadão como
+        uma métrica de 0 a 100.</p>
     </div>
   </div>
 
@@ -158,7 +162,7 @@
     </a>
     <a href="https://github.com/luizhtmoreira" class="team-card">
       <img src="https://avatars.githubusercontent.com/luizhtmoreira" alt="Luiz Henrique">
-      <span class="team-name">Luiz Henrique Thomaz</span>
+      <span class="team-name">Luiz Henrique Tomaz</span>
     </a>
     <a href="https://github.com/lucasaraujoszz" class="team-card">
       <img src="https://avatars.githubusercontent.com/lucasaraujoszz" alt="Lucas Araújo">
@@ -194,18 +198,21 @@
     padding: 0;
     margin: 0;
   }
+
   .md-main__inner {
     margin: 0;
     padding: 0;
     width: 100%;
   }
+
   .md-content {
     max-width: 100% !important;
   }
+
   .md-sidebar {
     display: none !important;
   }
-  
+
   /* Background fix to make the whole page consistent */
   body {
     background-color: #061121;
@@ -222,8 +229,9 @@
     left: 0;
     right: 0;
     z-index: 100;
-    border-bottom: 1px solid rgba(255,255,255,0.08);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   }
+
   .header-container {
     max-width: 1100px;
     margin: 0 auto;
@@ -231,6 +239,7 @@
     justify-content: center;
     align-items: center;
   }
+
   .logo {
     color: #fff;
     font-size: 1.4rem;
@@ -240,13 +249,15 @@
     align-items: center;
     gap: 0.5rem;
   }
+
   .logo:hover {
     color: #93b4f8;
   }
-  
+
   /* Wrapper */
   .landing-page-wrapper {
-    padding-top: 100px; /* space for fixed header */
+    padding-top: 100px;
+    /* space for fixed header */
     max-width: 1100px;
     margin: 0 auto;
     padding-bottom: 4rem;
@@ -258,11 +269,12 @@
     background: #040c17;
     padding: 3rem 2rem;
     text-align: center;
-    border-top: 1px solid rgba(255,255,255,0.05);
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
     margin-top: 4rem;
   }
+
   .custom-footer p {
-    color: rgba(255,255,255,0.4);
+    color: rgba(255, 255, 255, 0.4);
     margin: 0;
     font-size: 0.9rem;
   }
