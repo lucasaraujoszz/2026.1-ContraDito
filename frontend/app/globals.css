@@ -1,26 +1,74 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  --color-canvas:    #05080f;
+  --color-card:      #0c1220;
+  --color-card-alt:  #111927;
+  --color-rim:       #1a2435;
+
+  --color-bright:    #e8edf5;
+  --color-mid:       #8892a4;
+  --color-dim:       #3d4a5c;
+
+  --color-coherent:   #10b981;
+  --color-incoherent: #f43f5e;
+  --color-pending:    #475569;
+
+  --color-pulse: #5e88ff;
+  --color-aurum: #f59e0b;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  body {
+    background-color: #05080f;
+    color: #e8edf5;
+    font-family: var(--font-dm-sans, "DM Sans", system-ui, sans-serif);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
+
+  ::selection {
+    background: rgba(94, 136, 255, 0.28);
+    color: #e8edf5;
+  }
+
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: #1a2435; border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: #2d3f54; }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer utilities {
+  .font-display {
+    font-family: var(--font-fraunces, "Georgia", serif);
+  }
+
+  .font-data {
+    font-family: var(--font-jetbrains, "ui-monospace", monospace);
+  }
+
+  .glass {
+    background: rgba(12, 18, 32, 0.75);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+  }
+
+  .glass-elevated {
+    background: rgba(17, 25, 39, 0.88);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.11);
+  }
+
+  .noise-overlay::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    background-repeat: repeat;
+    background-size: 128px;
+    pointer-events: none;
+    z-index: 0;
+  }
 }
