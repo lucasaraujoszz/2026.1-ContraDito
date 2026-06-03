@@ -5,7 +5,8 @@ from datetime import datetime, timedelta
 from dotenv import load_dotenv
 from supabase import create_client, Client
 
-from etl.extrator_discursos import executar_pipeline_completo
+from etl.extrator_discursos_camara import executar_pipeline_completo as executar_pipeline_camara
+from etl.extrator_discursos_senado import executar_pipeline_completo as executar_pipeline_senado
 
 # Força o logger do terminal a exibir o horário em UTC (Internacional)
 logging.Formatter.converter = time.gmtime
@@ -27,6 +28,10 @@ if __name__ == "__main__":
     data_inicio = "2023-01-01"
     data_fim = (datetime.now() - timedelta(days=1)).strftime("%Y-%m-%d")
     
-    logging.info(f"Iniciando extração histórica de discursos ({data_inicio} a {data_fim})...")
-    executar_pipeline_completo(supabase, data_inicio, data_fim)
-    logging.info("Extração finalizada! Verifique as tabelas 'discurso' e 'etl_logs' no Supabase.")
+    logging.info(f"Iniciando extração histórica de discursos da Câmara ({data_inicio} a {data_fim})...")
+    executar_pipeline_camara(supabase, data_inicio, data_fim)
+    
+    logging.info(f"Iniciando extração histórica de discursos do Senado ({data_inicio} a {data_fim})...")
+    executar_pipeline_senado(supabase, data_inicio, data_fim)
+    
+    logging.info("Extração do Congresso Nacional finalizada! Verifique as tabelas de discursos e 'etl_logs' no Supabase.")
