@@ -35,6 +35,8 @@ A carga inicial (Backfill) consumirá janelas de 1 semestre, e a carga contínua
 12. Como **engenheiro de dados**, quero que o lote de discursos extraídos seja deduplicado em memória antes do envio ao banco, para evitar falhas de transação por colisão de chave primária (Erro 21000) no PostgreSQL.
 13. Como **engenheiro de software**, quero que o sistema detecte vazamentos binários (arquivos DOCX crus) vindos da API antes de tentar processar o HTML, descartando a sujeira pesada para evitar estouro de memória e crashes.
 14. Como **analista de dados (NLP)**, quero que notas taquigráficas curtas e reações da plateia (ex: `(Risos)`, `[Palmas]`) sejam normalizadas para um padrão único com chaves (`{Risos}`), facilitando o manuseio futuro pelos modelos de linguagem.
+15. Como **engenheiro de dados**, quero que requisições HTTP falhas (ex: 500, 503, 429) sejam retentadas com backoff progressivo antes de declarar erro irreversível, garantindo resiliência da extração noturna.
+16. Como **engenheiro de dados**, quero que a limpeza de transcrições nulas ou vazias retorne uma string vazia instantaneamente sem disparar exceções, mantendo a estabilidade do pipeline.
 
 ---
 
@@ -52,6 +54,11 @@ A carga inicial (Backfill) consumirá janelas de 1 semestre, e a carga contínua
 - **Deduplicação em Memória:** Antes da inserção no banco, o script realiza um filtro em memória no array gerado para reter apenas valores únicos (por chave ID), impedindo que dados duplicados devolvidos erroneamente no payload da API quebrem o *Bulk Upsert*.
 - O *Bulk Upsert* resolverá os conflitos com base nesse UUID `id` pelo método oficial do Supabase em Python.
 - O UPDATE no `watermarker` dentro da tabela `etl_logs` só rodará no final da execução bem-sucedida do loop principal, garantindo que "janelas caídas pela metade" refaçam todo o seu conteúdo na próxima vez através de sobreposições limpas (Upsert).
+
+### Resiliência de Rede e Tratamento Defensivo
+- **Estratégia de Retry/Backoff:** Implementar no módulo extrator retentativas mecânicas (ex: `time.sleep` progressivo) utilizando a biblioteca `httpx` para contornar instabilidades do servidor governamental (Erros 500, 503 e 429).
+- **Tipagem Defensiva (`faseEvento`):** A extração do payload deve prever e contornar a anomalia da API da Câmara em que o campo `faseEvento` pode vir como um Dicionário (ex: `{"titulo": "Evento"}`) ou erroneamente como uma String direta.
+- **Nulos e Vazios:** Tratar entradas `None` ou `""` de antemão na função de limpeza de transcrição, retornando `""` precocemente.
 
 ### Higienização de Texto e Fallback
 - Criar uma função dedicada (ex: `limpar_transcricao`) no pacote/módulo de transformação isolado (Pipe and Filter).
@@ -87,6 +94,7 @@ O modelo do dicionário final para a lista inserida em lote no Supabase deverá 
 - Mocagem (mock) da API para simular a resposta de um array vazio no semestre e garantir que o iterador avança para o próximo deputado graciosamente.
 - Mocagem para simular paginação extra (presença da chave `rel="next"`), atestando que a recursividade/loop do script consome todas as ramificações de páginas de discursos.
 - Mocagem para atestar que discursos duplicados entregues pela API em uma mesma requisição não atinjam a camada de Upsert do banco de dados (deduplicação no cliente ETL).
+- Mocagem de falhas de servidor governamental (Status > 500 ou 429) via *mock* HTTP para validar a ativação correta do algoritmo de *backoff* progressivo antes do descarte ou sucesso da requisição.
 
 ---
 
