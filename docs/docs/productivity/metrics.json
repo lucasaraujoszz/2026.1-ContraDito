@@ -1,12 +1,7 @@
 {
-  "generated_at": "2026-06-03T05:03:41Z",
+  "generated_at": "2026-06-04T04:56:24Z",
   "repository": "unb-mds/2026.1-ContraDito",
   "issues_per_week": [
-    {
-      "week": "2026-W13",
-      "opened": 7,
-      "closed": 0
-    },
     {
       "week": "2026-W14",
       "opened": 7,
@@ -51,6 +46,11 @@
       "week": "2026-W22",
       "opened": 2,
       "closed": 0
+    },
+    {
+      "week": "2026-W23",
+      "opened": 1,
+      "closed": 7
     }
   ],
   "commit_message_histogram": [
@@ -546,7 +546,7 @@
     {
       "username": "henriquemendeselias",
       "name": "henriquemendeselias",
-      "prs_opened": 18
+      "prs_opened": 19
     },
     {
       "username": "matheus0346",
@@ -578,9 +578,9 @@
     {
       "username": "henriquemendeselias",
       "name": "henriquemendeselias",
-      "opened": 20,
-      "closed": 47,
-      "total": 67
+      "opened": 21,
+      "closed": 54,
+      "total": 75
     },
     {
       "username": "jot4-ge",
@@ -674,7 +674,7 @@
   "lead_time_issues_by_label": [
     {
       "label": "documentation",
-      "avg_days_to_close": 3.8
+      "avg_days_to_close": 4.2
     },
     {
       "label": "enhancement",
@@ -733,11 +733,6 @@
   ],
   "velocity": [
     {
-      "week": "2026-W13",
-      "issues_closed": 0,
-      "rolling_avg": 0.0
-    },
-    {
       "week": "2026-W14",
       "issues_closed": 8,
       "rolling_avg": 4.0
@@ -781,6 +776,11 @@
       "week": "2026-W22",
       "issues_closed": 0,
       "rolling_avg": 5.2
+    },
+    {
+      "week": "2026-W23",
+      "issues_closed": 7,
+      "rolling_avg": 6.8
     }
   ],
   "individual_stats": [
@@ -788,11 +788,11 @@
       "username": "henriquemendeselias",
       "name": "henriquemendeselias",
       "commits": 80,
-      "prs_opened": 18,
+      "prs_opened": 19,
       "prs_reviewed": 0,
       "prs_merged": 35,
-      "issues_opened": 20,
-      "issues_closed": 47
+      "issues_opened": 21,
+      "issues_closed": 54
     },
     {
       "username": "matheus0346",
