@@ -2,5 +2,6 @@ supabase==2.4.1
 python-dotenv==1.0.1
 torch
 sentence-transformers
+langchain-text-splitters
 fastapi
 uvicorn
