@@ -3,12 +3,12 @@ from sentence_transformers import SentenceTransformer
 
 
 class MotorNLP:
-    def __init__(self, modelo_nome: str = "paraphrase-multilingual-mpnet-base-v2"):
+    def __init__(self, modelo_nome: str = "BAAI/bge-m3"):
         self.modelo = SentenceTransformer(modelo_nome)
 
     async def gerar_embedding(self, texto_limpo: str) -> list[float]:
         """
-        Recebe um texto limpo e gera um vetor denso de 768 dimensões.
+        Recebe um texto limpo e gera um vetor denso de 1024 dimensões.
         Usa to_thread para não bloquear o event loop do ETL.
         """
         if not texto_limpo:
