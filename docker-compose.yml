@@ -1,68 +1,96 @@
 services:
-  # 1. O Garçom (Leve e rápido)
-  api:
+  redis:
+    image: redis:alpine
+    platform: linux/arm64
+    networks:
+      - read
+      - write
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  fastapi:
     build:
       context: .
       dockerfile: Dockerfile.api
+    platform: linux/arm64
+    restart: unless-stopped
     ports:
-      - "8000:8000"
-    volumes:
-      - .:/code
-    env_file:
-      - .env
-    depends_on:
-      - banco_dados
+      - "127.0.0.1:8001:8000"
     networks:
-      - rede_contradito
+      - read
+    volumes:
+      - .:/app
+    environment:
+      - SUPABASE_URL=${SUPABASE_URL}
+      - SUPABASE_KEY=${SUPABASE_KEY}
+      - REDIS_URL=${REDIS_URL:-redis://redis:6379}
+    depends_on:
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/docs"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    # Hot-reload ativado para ambiente de desenvolvimento local
+    command: ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
 
-  # 2. O Cozinheiro (Worker de IA - Isolado)
-  worker:
+  nextjs:
     build:
-      context: .
-      dockerfile: Dockerfile.worker
-    expose:
-      - "8001" # RNF08: Expõe a porta ESTRITAMENTE para a rede interna do Docker. Não acessível de fora.
-    volumes:
-      - .:/code
-    env_file:
-      - .env
-    depends_on:
-      - banco_dados
-    networks:
-      - rede_contradito
-
-  # 3. Interface do Usuário
-  frontend:
-    build: ./frontend
+      context: ./frontend
+      dockerfile: Dockerfile
+    platform: linux/arm64
+    restart: unless-stopped
     ports:
-      - "3000:3000"
+      - "127.0.0.1:3000:3000"
+    networks:
+      - read
     volumes:
       - ./frontend:/app
       - /app/node_modules
     environment:
-      - WATCHPACK_POLLING=true
-      - NEXT_PUBLIC_API_URL=http://localhost:8000
-    networks:
-      - rede_contradito
+      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-http://localhost:8001}
+      - API_INTERNAL_URL=${API_INTERNAL_URL:-http://fastapi:8000}
+    depends_on:
+      fastapi:
+        condition: service_healthy
 
-  # 4. Persistência
-  banco_dados:
-    image: pgvector/pgvector:pg15
-    environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=contradito
-    ports:
-      - "5432:5432" # Mantido exposto para você conseguir inspecionar via DBeaver/PgAdmin localmente
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile.worker
+    platform: linux/arm64
     networks:
-      - rede_contradito
+      - write
+    volumes:
+      - .:/app
+      - huggingface_cache:/root/.cache/huggingface
+    environment:
+      - SUPABASE_URL=${SUPABASE_URL}
+      - SUPABASE_KEY=${SUPABASE_KEY}
+      - LLM_PROVIDER=${LLM_PROVIDER:-groq}
+      - GROQ_API_KEY=${GROQ_API_KEY}
+      - OLLAMA_BASE_URL=${OLLAMA_BASE_URL}
+      - REDIS_URL=${REDIS_URL:-redis://redis:6379}
+    depends_on:
+      redis:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          cpus: "2.0"
+          memory: 4G
+    # Mantém o contêiner em modo ocioso para permitir a execução manual via `docker compose run` 
+    # ou cron jobs internos, sem fechar imediatamente o contêiner no compose up.
+    command: ["tail", "-f", "/dev/null"]
+
+networks:
+  read:
+  write:
 
 volumes:
-  postgres_data:
-
-# Criação explícita da rede privada do projeto
-networks:
-  rede_contradito:
-    driver: bridge
+  huggingface_cache:

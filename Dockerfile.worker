@@ -1,12 +1,24 @@
 FROM python:3.12-slim
 
-WORKDIR /code
+WORKDIR /app
 
+# Evita a criação de arquivos .pyc e logs cacheados para reduzir tamanho da imagem
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+
+# 1. Camada 1: Dependências de IA (PyTorch, Sentence-Transformers, Langchain)
+# Estas mudam muito raramente, isolá-las otimiza builds em 90% do tempo.
+RUN pip install --no-cache-dir torch sentence-transformers langchain-core langchain-ollama --extra-index-url https://download.pytorch.org/whl/cpu
+
+# 2. Camada 2: Dependências de parsing de PDF e higienização (conforme arquitetura)
+RUN pip install --no-cache-dir pdfplumber beautifulsoup4
+
+# 3. Camada 3: Demais dependências dinâmicas do projeto (Supabase, FastAPI, Redis, etc)
 COPY requirements.worker.txt .
 RUN pip install --no-cache-dir -r requirements.worker.txt
 
+# 4. Camada 4: Código-fonte da aplicação
 COPY . .
 
-EXPOSE 8001
-
-CMD ["uvicorn", "worker_api:app", "--host", "0.0.0.0", "--port", "8001"]
+# O Entrypoint fica delegado ao docker-compose (cron / exec manual)
+CMD ["python", "main.py"]
