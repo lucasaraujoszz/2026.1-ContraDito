@@ -37,13 +37,11 @@ export function FilterBar({ onChange }: FilterBarProps) {
 
   const update = useCallback(
     (key: keyof Filters, value: string | boolean) => {
-      setF((prev) => {
-        const next = { ...prev, [key]: value };
-        onChange(next);
-        return next;
-      });
+      const next = { ...f, [key]: value };
+      setF(next);
+      onChange(next);
     },
-    [onChange]
+    [f, onChange]
   );
 
   return (
