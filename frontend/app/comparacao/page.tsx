@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { Search, X, Swords } from "lucide-react";
+import { Search, X, Swords, AlertTriangle } from "lucide-react";
 import { getParlamentares, getTimeline } from "@/lib/api";
 import { TendenciaRecente } from "@/components/TendenciaRecente";
 import { Avatar } from "@/components/ui/Avatar";
@@ -74,7 +74,17 @@ function ParlamentarSelector({
           <p className="font-display text-xl font-bold text-bright">{selected.nome_urna}</p>
           <p className="text-xs text-dim mt-1">{selected.partido} · {selected.cargo} · {selected.estado}</p>
         </div>
-        <ScoreGauge score={selected.score_coerencia} size={80} />
+        {selected.dados_insuficientes ? (
+          <div className="flex flex-col items-center gap-1.5 py-1">
+            <AlertTriangle size={18} className="text-pending" />
+            <p className="font-data text-[11px] text-pending text-center leading-snug">
+              Dados insuficientes
+            </p>
+            <p className="text-[10px] text-dim">mín. 3 votos válidos (RF15)</p>
+          </div>
+        ) : (
+          <ScoreGauge score={selected.score_coerencia} size={80} />
+        )}
         <button
           onClick={() => onSelect(null)}
           className="text-xs text-dim hover:text-incoherent flex items-center gap-1 transition-colors"
@@ -225,7 +235,17 @@ export default function ComparacaoPage() {
                   <p className="font-display text-lg font-bold text-bright">{pol.nome_urna}</p>
                   <p className="text-xs text-dim mt-0.5">{pol.partido} · {pol.estado}</p>
                 </div>
-                <ScoreGauge score={pol.score_coerencia} size={72} />
+                {pol.dados_insuficientes ? (
+                  <div className="flex flex-col items-center gap-1.5 py-1">
+                    <AlertTriangle size={18} className="text-pending" />
+                    <p className="font-data text-[11px] text-pending text-center leading-snug">
+                      Dados insuficientes
+                    </p>
+                    <p className="text-[10px] text-dim">mín. 3 votos válidos (RF15)</p>
+                  </div>
+                ) : (
+                  <ScoreGauge score={pol.score_coerencia} size={72} />
+                )}
                 {tl.length > 0 && <TendenciaRecente points={tl} />}
               </div>
             ))}
