@@ -27,7 +27,9 @@ jobs:
           pip install -r requirements.api.txt -r requirements.test.txt
           
           # 2. Instala o worker filtrando o google-genai para evitar o conflito no resolver
-          grep -v "google-genai" requirements.worker.txt | pip install -r -
+          grep -v "google-genai" requirements.worker.txt > temp_requirements.txt
+          pip install -r temp_requirements.txt
+          rm temp_requirements.txt
           
           # 3. Instala a versão específica do google-genai
           pip install "google-genai==2.8.0"
