@@ -38,7 +38,7 @@ if __name__ == "__main__":
 
     supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
     gemini_client = genai.Client(api_key=GEMINI_API_KEY)
-    qdrant_client = QdrantClient(url=QDRANT_URL, api_key=QDRANT_API_KEY)
+    qdrant_client = QdrantClient(url=QDRANT_URL, api_key=QDRANT_API_KEY, timeout=60)
 
     logging.info(f"Iniciando pipeline de inferência de postura (limite={limite})...")
     total = asyncio.run(
