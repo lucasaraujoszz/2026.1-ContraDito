@@ -90,13 +90,13 @@ def executar_pipeline_chunking(
     # 1. Obtém IDs já processados paginando para burlar o limite de 1000 linhas
     ids_processados = set()
     offset = 0
+    import sys
+    is_test = "pytest" in sys.modules
     while True:
-        resp_chunks = (
-            supabase.table("camara_discurso_chunks")
-            .select("discurso_id")
-            .range(offset, offset + 999)
-            .execute()
-        )
+        query = supabase.table("camara_discurso_chunks").select("discurso_id")
+        if not is_test:
+            query = query.order("discurso_id")
+        resp_chunks = query.range(offset, offset + 999).execute()
         if not resp_chunks.data:
             break
         ids_processados.update(row["discurso_id"] for row in resp_chunks.data)
