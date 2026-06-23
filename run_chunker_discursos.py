@@ -31,7 +31,7 @@ for var, nome in [
         sys.exit(1)
 
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
-qdrant_client = QdrantClient(url=QDRANT_URL, api_key=QDRANT_KEY)
+qdrant_client = QdrantClient(url=QDRANT_URL, api_key=QDRANT_KEY, timeout=60)
 
 
 def parse_args():

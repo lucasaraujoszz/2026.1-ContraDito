@@ -8,26 +8,28 @@ from etl.utils import para_timestamp
 def _make_supabase_mock(discursos_data: list, ids_ja_processados: list | None = None):
     """
     Monta um cliente Supabase falso que responde às queries do pipeline de chunking.
-    Retorna (supabase_mock, chunks_table_mock) — o segundo permite verificar se insert foi chamado.
+    Retorna (supabase_mock, chunks_table_mock, discursos_table_mock) — o segundo permite verificar se upsert foi chamado.
     """
     if ids_ja_processados is None:
         ids_ja_processados = []
 
-    chunks_table = MagicMock()
-    chunks_table.select.return_value.execute.return_value.data = ids_ja_processados
+    # Garante que os IDs estejam no formato de dicionário esperado
+    ids_processados_dicts = []
+    for item in ids_ja_processados:
+        if isinstance(item, str):
+            ids_processados_dicts.append({"discurso_id": item})
+        else:
+            ids_processados_dicts.append(item)
 
-    execute_result = MagicMock()
-    execute_result.data = discursos_data
+    chunks_table = MagicMock()
+    chunks_page_1 = MagicMock(data=ids_processados_dicts)
+    chunks_page_2 = MagicMock(data=[])
+    chunks_table.select.return_value.range.return_value.execute.side_effect = [chunks_page_1, chunks_page_2]
 
     discursos_table = MagicMock()
-    # select().order().execute()                         — sem ids_processados
-    discursos_table.select.return_value.order.return_value.execute.return_value = execute_result
-    # select().order().not_.in_().execute()              — com ids_processados
-    discursos_table.select.return_value.order.return_value.not_.in_.return_value.execute.return_value = execute_result
-    # select().order().limit().execute()                 — com limite
-    discursos_table.select.return_value.order.return_value.limit.return_value.execute.return_value = execute_result
-    # select().order().not_.in_().limit().execute()      — com ambos
-    discursos_table.select.return_value.order.return_value.not_.in_.return_value.limit.return_value.execute.return_value = execute_result
+    disc_page_1 = MagicMock(data=discursos_data)
+    disc_page_2 = MagicMock(data=[])
+    discursos_table.select.return_value.order.return_value.range.return_value.execute.side_effect = [disc_page_1, disc_page_2]
 
     supabase = MagicMock()
     supabase.table.side_effect = lambda name: (
@@ -253,7 +255,7 @@ def test_processar_discurso_casting_defensivo_tipos():
 def test_pipeline_sem_discursos_pendentes_retorna_zero():
     """
     Quando não há discursos para processar, o pipeline retorna 0
-    e não aciona nenhum insert.
+    e não aciona nenhum upsert.
     """
     supabase, chunks_table, _ = _make_supabase_mock(discursos_data=[])
 
@@ -266,12 +268,12 @@ def test_pipeline_sem_discursos_pendentes_retorna_zero():
     )
 
     assert total == 0
-    chunks_table.insert.assert_not_called()
+    chunks_table.upsert.assert_not_called()
 
 
 def test_pipeline_processa_discurso_valido_e_retorna_contagem():
     """
-    Um discurso com texto válido deve gerar chunks, acionar o insert
+    Um discurso com texto válido deve gerar chunks, acionar o upsert
     e retornar a quantidade exata de chunks inseridos.
     """
     discurso_id = "discurso-uuid-001"
@@ -289,8 +291,8 @@ def test_pipeline_processa_discurso_valido_e_retorna_contagem():
     )
 
     assert total == 1
-    chunks_table.insert.assert_called_once()
-    payload = chunks_table.insert.call_args[0][0]
+    chunks_table.upsert.assert_called_once()
+    payload = chunks_table.upsert.call_args[0][0]
     assert len(payload) == 1
     assert payload[0]["discurso_id"] == discurso_id
     assert payload[0]["texto_chunk"] == texto
@@ -298,7 +300,7 @@ def test_pipeline_processa_discurso_valido_e_retorna_contagem():
 
 def test_pipeline_descarta_discurso_corrompido():
     """
-    Discurso com texto corrompido não deve gerar nenhum insert
+    Discurso com texto corrompido não deve gerar nenhum upsert
     e o pipeline deve retornar 0.
     """
     supabase, chunks_table, _ = _make_supabase_mock(
@@ -314,7 +316,7 @@ def test_pipeline_descarta_discurso_corrompido():
     )
 
     assert total == 0
-    chunks_table.insert.assert_not_called()
+    chunks_table.upsert.assert_not_called()
 
 
 def test_pipeline_ordena_discursos_do_mais_novo_para_o_mais_antigo():
@@ -333,3 +335,29 @@ def test_pipeline_ordena_discursos_do_mais_novo_para_o_mais_antigo():
     )
 
     discursos_table.select.return_value.order.assert_called_once_with("data_discurso", desc=True)
+
+
+def test_processar_discurso_camara_qdrant_sub_lotes():
+    """
+    Garante que a inserção no Qdrant é fatiada em lotes menores (ex: 50 pontos)
+    para evitar timeout de rede em discursos muito longos.
+    """
+    qdrant = _qdrant_mock()
+    modelo = _modelo_mock()
+
+    # Texto grande o suficiente para gerar mais de 50 chunks (52 chunks)
+    texto_grande = "A" * 52000
+
+    processar_discurso(
+        discurso_id="uuid-gigante",
+        politico_id=1,
+        data_discurso="2023-01-01",
+        texto_bruto=texto_grande,
+        modelo=modelo,
+        qdrant_client=qdrant,
+        chunk_size=1000,
+        chunk_overlap=0,
+    )
+
+    # 52 chunks devem gerar 2 chamadas de upsert no Qdrant (50 no primeiro, 2 no segundo)
+    assert qdrant.upsert.call_count == 2

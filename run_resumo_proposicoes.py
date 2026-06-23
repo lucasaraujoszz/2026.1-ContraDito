@@ -33,7 +33,7 @@ def obter_qdrant_client() -> QdrantClient:
     if not qdrant_url or not qdrant_key:
         logging.error("QDRANT_URL e QDRANT_KEY precisam estar definidas para processar o Senado.")
         sys.exit(1)
-    return QdrantClient(url=qdrant_url, api_key=qdrant_key)
+    return QdrantClient(url=qdrant_url, api_key=qdrant_key, timeout=60)
 
 
 async def main():
