@@ -33,7 +33,7 @@ nav:
       - Manual do Usuário: manual.md
       - Escopo e Visão Geral: escopo.md
       - Links Úteis: links.md
-      - Entendendo o Score de Coerência: calculo-score.md
+      # - Entendendo o Score de Coerência: calculo-score.md
       - Transparência, LGPD e Dados: lgpd.md
 
   -  Requisitos e Gestão:
@@ -52,6 +52,8 @@ nav:
           - Sprint 7: sprints/sprint-7.md
           - Sprint 8: sprints/sprint-8.md
           - Sprint 9: sprints/sprint-9.md
+          - Sprint 10: sprints/sprint-10.md
+          - Sprint 11: sprints/sprint-11.md
 
   -  Arquitetura e Engenharia:
       - Visão Geral da Arquitetura: arquitetura.md
@@ -88,5 +90,4 @@ markdown_extensions:
 
 extra_javascript:
   - javascripts/mathjax.js
-  - https://polyfill.io/v3/polyfill.min.js?features=es6
   - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
