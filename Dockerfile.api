@@ -1,20 +1,49 @@
-FROM python:3.12-slim
+# =================================================================
+# Estágio 1: 'base' - Imagem python com utilitários
+# =================================================================
+FROM python:3.12-slim as base
 
 WORKDIR /app
 
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
-# Instala o curl para o healthcheck no docker-compose
+# Instala o curl, necessário para o healthcheck definido no docker-compose.yml
 RUN apt-get update && apt-get install -y --no-install-recommends curl && \
     rm -rf /var/lib/apt/lists/*
 
-COPY requirements.api.txt .
+# =================================================================
+# Estágio 2: 'builder_prod' - Instala apenas dependências de PRODUÇÃO
+# =================================================================
+FROM base as builder_prod
 
+COPY requirements.api.txt .
 RUN pip install --no-cache-dir -r requirements.api.txt
+
+# =================================================================
+# Estágio 3: 'test' - Adiciona dependências de TESTE e define o comando
+# Para executar os testes: docker build --target test .
+# =================================================================
+FROM builder_prod as test
+
+COPY requirements.test.txt .
+RUN pip install --no-cache-dir -r requirements.test.txt
 
 COPY . .
 
-EXPOSE 8000
+# O comando `pytest` será executado no diretório raiz do projeto
+CMD ["pytest"]
 
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+# =================================================================
+# Estágio 4: 'production' (final) - Imagem de produção enxuta
+# Esta é a imagem construída por padrão pelo `docker compose build`
+# =================================================================
+FROM base as production
+
+# Copia apenas os pacotes de produção pré-instalados do estágio 'builder_prod'
+COPY --from=builder_prod /usr/local/lib/python3.12/site-packages /usr/local/lib/python3.12/site-packages
+COPY --from=builder_prod /usr/local/bin /usr/local/bin
+
+COPY . .
+EXPOSE 8000
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]

@@ -1,7 +1,6 @@
 services:
   redis:
     image: redis:alpine
-    platform: linux/arm64
     networks:
       - read
       - write
@@ -16,7 +15,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.api
-    platform: linux/arm64
     restart: unless-stopped
     ports:
       - "127.0.0.1:8001:8000"
@@ -28,6 +26,7 @@ services:
       - SUPABASE_URL=${SUPABASE_URL}
       - SUPABASE_KEY=${SUPABASE_KEY}
       - REDIS_URL=${REDIS_URL:-redis://redis:6379}
+      - WATCHFILES_FORCE_POLLING=true
     depends_on:
       redis:
         condition: service_healthy
@@ -43,7 +42,6 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-    platform: linux/arm64
     restart: unless-stopped
     ports:
       - "127.0.0.1:3000:3000"
@@ -55,6 +53,8 @@ services:
     environment:
       - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-http://localhost:8001}
       - API_INTERNAL_URL=${API_INTERNAL_URL:-http://fastapi:8000}
+      - WATCHPACK_POLLING=true
+      - CHOKIDAR_USEPOLLING=true
     depends_on:
       fastapi:
         condition: service_healthy
@@ -63,7 +63,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.worker
-    platform: linux/arm64
     networks:
       - write
     volumes:
@@ -72,9 +71,9 @@ services:
     environment:
       - SUPABASE_URL=${SUPABASE_URL}
       - SUPABASE_KEY=${SUPABASE_KEY}
-      - LLM_PROVIDER=${LLM_PROVIDER:-groq}
-      - GROQ_API_KEY=${GROQ_API_KEY}
-      - OLLAMA_BASE_URL=${OLLAMA_BASE_URL}
+      - QDRANT_URL=${QDRANT_URL}
+      - QDRANT_API_KEY=${QDRANT_API_KEY}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
       - REDIS_URL=${REDIS_URL:-redis://redis:6379}
     depends_on:
       redis:
@@ -87,6 +86,52 @@ services:
     # Mantém o contêiner em modo ocioso para permitir a execução manual via `docker compose run` 
     # ou cron jobs internos, sem fechar imediatamente o contêiner no compose up.
     command: ["tail", "-f", "/dev/null"]
+
+  # =================================================================
+  # Serviços de Teste (executados apenas com --profile test)
+  # =================================================================
+  test-api:
+    profiles:
+      - test
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+      target: test
+    networks:
+      - read
+    environment:
+      - SUPABASE_URL=${SUPABASE_URL}
+      - SUPABASE_KEY=${SUPABASE_KEY}
+      - REDIS_URL=${REDIS_URL:-redis://redis:6379}
+    depends_on:
+      redis:
+        condition: service_healthy
+
+  test-worker:
+    profiles:
+      - test
+    build:
+      context: .
+      dockerfile: Dockerfile.worker
+      target: test
+    networks:
+      - write
+    environment:
+      - SUPABASE_URL=${SUPABASE_URL}
+      - SUPABASE_KEY=${SUPABASE_KEY}
+      - QDRANT_URL=${QDRANT_URL}
+      - QDRANT_API_KEY=${QDRANT_API_KEY}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - REDIS_URL=${REDIS_URL:-redis://redis:6379}
+
+  docs:
+    image: squidfunk/mkdocs-material:9.5.18
+    ports:
+      - "127.0.0.1:8002:8000"
+    volumes:
+      - ./docs:/docs
+    environment:
+      - MKDOCS_WATCHDOG_USE_POLLING=true
 
 networks:
   read:
