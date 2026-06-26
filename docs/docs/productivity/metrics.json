@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-25T04:17:15Z",
+  "generated_at": "2026-06-26T04:23:28Z",
   "repository": "unb-mds/2026.1-ContraDito",
   "issues_per_week": [
     {
@@ -49,8 +49,8 @@
     },
     {
       "week": "2026-W26",
-      "opened": 1,
-      "closed": 0
+      "opened": 4,
+      "closed": 8
     }
   ],
   "commit_message_histogram": [
@@ -64,7 +64,7 @@
     },
     {
       "range": "51-100",
-      "count": 173
+      "count": 175
     },
     {
       "range": "101-200",
@@ -134,6 +134,16 @@
     }
   ],
   "commit_heatmap": [
+    {
+      "day": 3,
+      "hour": 13,
+      "count": 2
+    },
+    {
+      "day": 3,
+      "hour": 3,
+      "count": 1
+    },
     {
       "day": 1,
       "hour": 23,
@@ -446,11 +456,6 @@
     },
     {
       "day": 3,
-      "hour": 13,
-      "count": 1
-    },
-    {
-      "day": 3,
       "hour": 6,
       "count": 1
     },
@@ -604,7 +609,7 @@
     {
       "username": "henriquemendeselias",
       "name": "henriquemendeselias",
-      "commits": 127
+      "commits": 128
     },
     {
       "username": "luizhtmoreira",
@@ -624,7 +629,7 @@
     {
       "username": "lucasaraujoszz",
       "name": "lucasaraujoszz",
-      "commits": 11
+      "commits": 12
     },
     {
       "username": "G2SBiell",
@@ -656,7 +661,7 @@
     {
       "username": "matheus0346",
       "name": "matheus0346",
-      "prs_opened": 14
+      "prs_opened": 15
     },
     {
       "username": "jot4-ge",
@@ -683,9 +688,9 @@
     {
       "username": "henriquemendeselias",
       "name": "henriquemendeselias",
-      "opened": 25,
-      "closed": 57,
-      "total": 82
+      "opened": 26,
+      "closed": 63,
+      "total": 89
     },
     {
       "username": "jot4-ge",
@@ -704,9 +709,16 @@
     {
       "username": "matheus0346",
       "name": "matheus0346",
+      "opened": 12,
+      "closed": 5,
+      "total": 17
+    },
+    {
+      "username": "lucasaraujoszz",
+      "name": "lucasaraujoszz",
       "opened": 11,
-      "closed": 4,
-      "total": 15
+      "closed": 2,
+      "total": 13
     },
     {
       "username": "G2SBiell",
@@ -714,13 +726,6 @@
       "opened": 12,
       "closed": 1,
       "total": 13
-    },
-    {
-      "username": "lucasaraujoszz",
-      "name": "lucasaraujoszz",
-      "opened": 10,
-      "closed": 1,
-      "total": 11
     },
     {
       "username": "gpaulovit",
@@ -769,7 +774,7 @@
     },
     {
       "week": "2026-W26",
-      "avg_hours": 77.9
+      "avg_hours": 64.4
     }
   ],
   "code_review_matrix": [
@@ -797,7 +802,7 @@
   "lead_time_issues_by_label": [
     {
       "label": "documentation",
-      "avg_days_to_close": 4.2
+      "avg_days_to_close": 4.4
     },
     {
       "label": "enhancement",
@@ -811,21 +816,21 @@
   "code_churn_per_week": [
     {
       "week": "2026-W25",
-      "additions": 19916,
-      "deletions": 5471,
+      "additions": 19514,
+      "deletions": 5460,
       "modifications": 0
     },
     {
       "week": "2026-W26",
-      "additions": 15790,
-      "deletions": 6083,
+      "additions": 16118,
+      "deletions": 6171,
       "modifications": 0
     }
   ],
   "commit_types_distribution": [
     {
       "type": "other",
-      "count": 140
+      "count": 142
     },
     {
       "type": "chore",
@@ -900,20 +905,20 @@
     },
     {
       "week": "2026-W26",
-      "issues_closed": 0,
-      "rolling_avg": 2.8
+      "issues_closed": 8,
+      "rolling_avg": 4.8
     }
   ],
   "individual_stats": [
     {
       "username": "henriquemendeselias",
       "name": "henriquemendeselias",
-      "commits": 127,
+      "commits": 128,
       "prs_opened": 21,
       "prs_reviewed": 1,
-      "prs_merged": 40,
-      "issues_opened": 25,
-      "issues_closed": 57
+      "prs_merged": 41,
+      "issues_opened": 26,
+      "issues_closed": 63
     },
     {
       "username": "luizhtmoreira",
@@ -939,21 +944,21 @@
       "username": "matheus0346",
       "name": "matheus0346",
       "commits": 35,
-      "prs_opened": 14,
+      "prs_opened": 15,
       "prs_reviewed": 0,
       "prs_merged": 7,
-      "issues_opened": 11,
-      "issues_closed": 4
+      "issues_opened": 12,
+      "issues_closed": 5
     },
     {
       "username": "lucasaraujoszz",
       "name": "lucasaraujoszz",
-      "commits": 11,
+      "commits": 12,
       "prs_opened": 9,
       "prs_reviewed": 0,
       "prs_merged": 0,
-      "issues_opened": 10,
-      "issues_closed": 1
+      "issues_opened": 11,
+      "issues_closed": 2
     },
     {
       "username": "G2SBiell",
@@ -1074,8 +1079,8 @@
     },
     {
       "week": "2026-W26",
-      "avg_chars": 64.9,
-      "total_commits": 16
+      "avg_chars": 67.1,
+      "total_commits": 18
     }
   ]
 }
