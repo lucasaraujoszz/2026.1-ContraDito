@@ -4,7 +4,7 @@ import {
   LineChart, Line, XAxis, YAxis, CartesianGrid,
   Tooltip, ResponsiveContainer, ReferenceLine,
 } from "recharts";
-import { computeTimeline, formatDate, scoreHex, mergeTimelines } from "@/lib/utils";
+import { computeTimeline, formatDate, mergeTimelines } from "@/lib/utils";
 import type { TimelinePoint } from "@/lib/types";
 
 interface TooltipPayload {
