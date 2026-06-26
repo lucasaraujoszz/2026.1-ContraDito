@@ -240,3 +240,63 @@ async def test_resiliencia_e_rate_limit_api_senado():
 
         assert route.call_count == 3
         assert resultado.get("processo", {}).get("codigoMateria") == 12345
+
+
+@pytest.mark.asyncio
+@patch("etl.extrator_proposicoes_senado.fetch_pagina_arrasto")
+@patch("etl.extrator_proposicoes_senado.extrair_detalhe_proposicao")
+@patch("etl.extrator_proposicoes_senado.transformar_proposicao_senado")
+@patch("etl.extrator_proposicoes_senado.salvar_lote_parcial")
+async def test_processar_pagina_arrasto_completo(mock_salvar, mock_transformar, mock_extrair, mock_fetch):
+    from etl.extrator_proposicoes_senado import processar_pagina_arrasto
+    
+    mock_client = MagicMock()
+    mock_supabase = MagicMock()
+    semaphore = asyncio.Semaphore(5)
+    
+    mock_fetch.return_value = {
+        "processo": [
+            {"id": "123", "urlDocumento": "http://doc", "ementa": "Ementa 1"}
+        ]
+    }
+    
+    mock_extrair.return_value = {
+        "processo": {
+            "codigoMateria": 123,
+            "sigla": "PL",
+            "numero": 123,
+            "ano": 2023,
+            "autuacoes": [{"situacoes": [{"idTipo": 25, "inicio": "2023-05-15"}]}]
+        }
+    }
+    
+    mock_transformar.return_value = {"id": "uuid-1", "proposicao_id": "PL 123/2023"}
+    mock_salvar.return_value = 1
+    
+    linhas, prox_url = await processar_pagina_arrasto(mock_client, "http://arrasto-url", mock_supabase, semaphore)
+    
+    assert linhas == 1
+    assert prox_url is None
+    mock_fetch.assert_called_once()
+    mock_extrair.assert_called_once()
+    mock_transformar.assert_called_once()
+    mock_salvar.assert_called_once()
+
+
+@pytest.mark.asyncio
+@patch("etl.extrator_proposicoes_senado.processar_pagina_arrasto")
+async def test_executar_pipeline_completo_sucesso(mock_processar):
+    from etl.extrator_proposicoes_senado import executar_pipeline_completo
+    mock_supabase = MagicMock()
+    mock_processar.return_value = (10, None)
+    
+    await executar_pipeline_completo(mock_supabase, "2023-01-01", "2023-01-31")
+    
+    mock_supabase.table.assert_any_call("etl_logs")
+    mock_supabase.table().insert.assert_called_once()
+    args, _ = mock_supabase.table().insert.call_args
+    log_enviado = args[0]
+    assert log_enviado["nome_rotina"] == "extrator_proposicoes_senado"
+    assert log_enviado["status"] == "Concluído"
+    assert log_enviado["linhas_afetadas"] == 10
+

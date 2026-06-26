@@ -23,8 +23,8 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.api.txt -r requirements.test.txt
 
-      - name: Executar testes da API com Pytest
-        run: pytest tests/api tests/test_setup.py
+      - name: Executar testes da API com Pytest e Cobertura
+        run: pytest --cov=app --cov-fail-under=90 tests/api tests/test_setup.py
 
   testes-etl:
     name: Testes do ETL (Worker)
@@ -54,5 +54,5 @@ jobs:
           # 3. Instala a versão específica do google-genai
           pip install "google-genai==2.8.0"
 
-      - name: Executar testes do ETL com Pytest
-        run: pytest tests/etl
+      - name: Executar testes do ETL com Pytest e Cobertura
+        run: pytest --cov=etl --cov=utils --cov-fail-under=90 tests/etl
