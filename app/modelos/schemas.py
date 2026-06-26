@@ -1,110 +1,167 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 from typing import List, Optional
-from datetime import date
+from datetime import datetime, date as date_type
 
 
-class PoliticoBase(BaseModel):
-    nome_civil: str = Field(
-        ...,
-        description="Nome oficial do parlamentar",
-        examples=["João Batista da Silva"],
-    )
-    nome_urna: str = Field(
-        ...,
-        description="Nome utilizado na urna (usado na busca global)",
-        examples=["João da Silva"],
-    )
-    cargo: str = Field(..., examples=["Deputado Federal"])
-    partido: str = Field(..., examples=["PL"])
-    uf: str = Field(
-        ...,
-        min_length=2,
-        max_length=2,
-        description="Sigla do Estado (ex: DF, SP)",
-        examples=["SP"],
-    )
-    foto_url: Optional[str] = Field(None, examples=["https://camara.leg.br/foto.jpg"])
-    situacao: Optional[str] = Field(None, examples=["Em Exercício"])
+class PoliticoDB(BaseModel):
+    id: int
+    nome_civil: str
+    nome_urna: str
+    partido: str
+    cargo: str
+    estado: str
+    status_mandato: str
+    url_foto: Optional[str] = None
+    score_coerencia: Optional[float] = None
+    data_ultima_atualizacao: Optional[datetime] = None
 
 
-class PoliticoResponse(PoliticoBase):
-    id: int = Field(..., examples=[74646])
-    score_coerencia: Optional[float] = Field(
-        None,
-        description="Média de coerência de 0 a 100. Retorna Nulo se não houver dados suficientes.",
-        examples=[85.5],
-    )
+class PaginaPoliticosDB(BaseModel):
+    total_registros: int
+    pagina_atual: int
+    tamanho_pagina: int
+    total_paginas: int
+    itens: List[PoliticoDB]
 
 
-class ContextoOriginal(BaseModel):
-    tipo_documento: str = Field(..., examples=["Discurso"])
-    data_evento: date = Field(..., examples=["2023-10-15"])
-    texto_extraido: str = Field(
-        ...,
-        examples=[
-            "Eu sou totalmente a favor de reduzir os impostos da cesta básica..."
-        ],
-    )
-    link_fonte: Optional[str] = Field(
-        None,
-        description="Link do YouTube da TV Câmara ou PDF",
-        examples=["https://youtu.be/xyz"],
-    )
+class PoliticoResumoVotosSchema(BaseModel):
+    politico_id: int
+    casa: str
+    total_votos: int
+    qtd_sim: int
+    qtd_nao: int
+    qtd_ausencia: int
+    qtd_abstencao: int
+    qtd_obstrucao: int
+    qtd_outros: int
 
 
-class ResultadoIA(BaseModel):
-    topico_identificado: str = Field(..., examples=["Economia"])
-    postura_extraida_do_texto: str = Field(..., examples=["A Favor"])
-    voto_oficial_registrado: str = Field(..., examples=["Não"])
-    status_coerencia: bool = Field(..., examples=[False])
-    justificativa: Optional[str] = Field(
-        None,
-        examples=[
-            "O parlamentar discursou a favor da isenção, mas votou contra o projeto no painel."
-        ],
-    )
+class PoliticoDetalhadoDB(BaseModel):
+    politico: PoliticoDB
+    resumo_votos: Optional[PoliticoResumoVotosSchema] = None
 
 
-class ProvaContradicao(BaseModel):
-    id: int = Field(..., examples=[1024])
-    contexto: ContextoOriginal
-    resultado: ResultadoIA
+class DiscursoDB(BaseModel):
+    id: str  # UUID
+    politico_id: Optional[int] = None
+    data_discurso: Optional[str] = None
+    texto_bruto: str
+    url_video: Optional[str] = None
+    sumario: Optional[str] = None
+    fase_evento: Optional[str] = None
 
 
-class PerfilPoliticoDetalhado(BaseModel):
-    politico: PoliticoResponse
-    provas: List[ProvaContradicao]
+class PaginaDiscursosDB(BaseModel):
+    total_registros: int
+    pagina_atual: int
+    tamanho_pagina: int
+    total_paginas: int
+    itens: List[DiscursoDB]
 
 
-class PaginaPoliticos(BaseModel):
-    total_registros: int = Field(..., examples=[513])
-    pagina_atual: int = Field(..., examples=[1])
-    tamanho_pagina: int = Field(..., examples=[20])
-    total_paginas: int = Field(..., examples=[26])
-    itens: List[PoliticoResponse]
+class DiscursoChunkDB(BaseModel):
+    id: str  # UUID
+    discurso_id: str  # UUID
+    texto_chunk: str
 
 
-class BuscaVetorialRequest(BaseModel):
-    texto_busca: str = Field(
-        ...,
-        description="O texto da lei ou tema para buscar similaridade",
-        examples=["Aumento da carga tributária e taxação de grandes fortunas"],
-    )
-    id_parlamentar: Optional[int] = Field(
-        None,
-        description="Filtro opcional para buscar discursos de um político específico",
-        examples=[74646],
-    )
-    limite: int = Field(
-        5, ge=1, le=20, description="Quantidade de resultados a retornar", examples=[5]
-    )
+class ProposicaoDB(BaseModel):
+    id: str  # UUID
+    proposicao_id: str
+    id_camara: Optional[int] = None
+    id_senado: Optional[int] = None
+    id_votacao_camara: Optional[str] = None
+    id_votacao_senado: Optional[int] = None
+    tipo: str
+    numero: int
+    ano: int
+    ementa: str
+    data_votacao: Optional[date_type] = None
+    url_texto_inteiro: Optional[str] = None
+    resumo_executivo: Optional[str] = None
+    erro_resumo: Optional[str] = None
 
 
-class ResultadoSimilaridade(BaseModel):
-    id: int = Field(..., examples=[504])
-    texto_extraido: str = Field(
-        ..., examples=["Precisamos taxar as grandes fortunas imediatamente."]
-    )
-    similaridade: float = Field(
-        ..., description="Score matemático de 0 a 1 (0 = idêntico)", examples=[0.12]
-    )
+class PaginaProposicoesDB(BaseModel):
+    total_registros: int
+    pagina_atual: int
+    tamanho_pagina: int
+    total_paginas: int
+    itens: List[ProposicaoDB]
+
+
+class VotoDB(BaseModel):
+    id: str  # UUID
+    proposicao_id: str
+    politico_id: int
+    partido_na_epoca: Optional[str] = None
+    voto_oficial: str
+    chunks_proximos: Optional[List[dict]] = None
+
+
+class PaginaVotosDB(BaseModel):
+    total_registros: int
+    pagina_atual: int
+    tamanho_pagina: int
+    total_paginas: int
+    itens: List[VotoDB]
+
+
+class VotoTimelineSchema(BaseModel):
+    data_votacao: Optional[date_type] = None
+    proposicao_id: str
+    tipo: str
+    numero: int
+    ano: int
+    ementa: str
+    voto_oficial: str
+
+
+class DivergenciaVotoSchema(BaseModel):
+    proposicao_id: str
+    ementa: str
+    voto_politico_1: str
+    voto_politico_2: str
+
+
+class ComparacaoResponse(BaseModel):
+    concordancia_percentual: float
+    proposicoes_em_comum: int
+    divergencias: List[DivergenciaVotoSchema]
+
+
+class AfinidadeSchema(BaseModel):
+    politico: PoliticoDB
+    concordancia: float
+    votos_comuns: int
+
+
+class AfinidadesResponse(BaseModel):
+    gemeo: Optional[AfinidadeSchema] = None
+    antipoda: Optional[AfinidadeSchema] = None
+
+
+class FidelidadeResponse(BaseModel):
+    taxa_fidelidade: float
+    votos_alinhados: int
+    votos_rebeldes: int
+    total_votos_com_orientacao: int
+
+
+class PolarizacaoResponse(BaseModel):
+    proposicao_id: str
+    qtd_sim: int
+    qtd_nao: int
+    pct_sim: float
+    pct_nao: float
+    polarizacao: float
+    classificacao: str
+
+
+class CoesaoPartidoSchema(BaseModel):
+    partido: str
+    indice_coesao: float
+
+
+class CoesaoGeralResponse(BaseModel):
+    itens: List[CoesaoPartidoSchema]

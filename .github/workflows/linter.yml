@@ -6,6 +6,13 @@ on:
       - develop
       - main
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
 jobs:
   lint:
     runs-on: ubuntu-latest
@@ -25,7 +32,7 @@ jobs:
         pip install flake8 black
 
     - name: Check code formatting with Black
-      run: black --check app/
+      run: black --check .
 
     - name: Lint with Flake8
-      run: flake8 app/ --count --select=E9,F63,F7,F82 --show-source --statistics
+      run: flake8 .

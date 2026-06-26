@@ -12,21 +12,22 @@ Como rodar:
 import json
 from pathlib import Path
 
-YELLOW = '\033[93m'
-GREEN  = '\033[92m'
-BLUE   = '\033[94m'
-CYAN   = '\033[96m'
-RED    = '\033[91m'
-BOLD   = '\033[1m'
-RESET  = '\033[0m'
+YELLOW = "\033[93m"
+GREEN = "\033[92m"
+BLUE = "\033[94m"
+CYAN = "\033[96m"
+RED = "\033[91m"
+BOLD = "\033[1m"
+RESET = "\033[0m"
 
 MODELOS = [
-    {"nome": "Llama 3.1 8B",       "slug": "llama31_8b"},
-    {"nome": "Qwen 2.5 7B",        "slug": "qwen25_7b"},
-    {"nome": "Gemma 2 9B",         "slug": "gemma2_9b"},
+    {"nome": "Llama 3.1 8B", "slug": "llama31_8b"},
+    {"nome": "Qwen 2.5 7B", "slug": "qwen25_7b"},
+    {"nome": "Gemma 2 9B", "slug": "gemma2_9b"},
     {"nome": "Groq Llama 3.3 70B", "slug": "groq_llama33_70b"},
-    {"nome": "Groq Qwen 3 32B",    "slug": "groq_qwen3_32b"},
+    {"nome": "Groq Qwen 3 32B", "slug": "groq_qwen3_32b"},
 ]
+
 
 def wrap(text, width=55):
     """Quebra texto em linhas de até `width` caracteres."""
@@ -45,9 +46,10 @@ def wrap(text, width=55):
         lines.append(line)
     return lines or ["(vazio)"]
 
+
 def print_justificativas(caso_id, gabarito, dados_ementa, dados_resumo):
-    acertou_ementa  = dados_ementa.get("acertou", False)
-    acertou_resumo  = dados_resumo.get("acertou", False) if dados_resumo else None
+    acertou_ementa = dados_ementa.get("acertou", False)
+    acertou_resumo = dados_resumo.get("acertou", False) if dados_resumo else None
 
     print(f"\n{BOLD}{'─'*120}{RESET}")
     print(f"{BOLD}CASO: {caso_id.upper():<40} GABARITO: {gabarito}{RESET}")
@@ -68,7 +70,14 @@ def print_justificativas(caso_id, gabarito, dados_ementa, dados_resumo):
 
     # Justificativas lado a lado
     linhas_e = wrap(dados_ementa.get("justificativa", ""), 56)
-    linhas_r = wrap(dados_resumo.get("justificativa", "N/A — rode script 03 primeiro") if dados_resumo else "N/A — rode script 03 primeiro", 56)
+    linhas_r = wrap(
+        (
+            dados_resumo.get("justificativa", "N/A — rode script 03 primeiro")
+            if dados_resumo
+            else "N/A — rode script 03 primeiro"
+        ),
+        56,
+    )
 
     max_linhas = max(len(linhas_e), len(linhas_r))
     linhas_e += [""] * (max_linhas - len(linhas_e))
@@ -76,6 +85,7 @@ def print_justificativas(caso_id, gabarito, dados_ementa, dados_resumo):
 
     for le, lr in zip(linhas_e, linhas_r):
         print(f"  {CYAN}{le:<58}{RESET}  {CYAN}{lr:<58}{RESET}")
+
 
 def main():
     resultados_dir = Path("resultados")
@@ -103,16 +113,19 @@ def main():
         print(f"{'='*120}")
 
         for caso_id, dado_e in sorted(dados_ementa.items()):
-            gabarito  = dado_e.get("gabarito", "?")
-            dado_r    = dados_resumo_completo.get(caso_id)
+            gabarito = dado_e.get("gabarito", "?")
+            dado_r = dados_resumo_completo.get(caso_id)
             print_justificativas(caso_id, gabarito, dado_e, dado_r)
 
         # Acurácia do modelo
-        total    = len(dados_ementa)
-        acertos  = sum(1 for v in dados_ementa.values() if v["acertou"])
-        print(f"\n  {GREEN if acertos==total else YELLOW}Acurácia: {acertos}/{total}{RESET}")
+        total = len(dados_ementa)
+        acertos = sum(1 for v in dados_ementa.values() if v["acertou"])
+        print(
+            f"\n  {GREEN if acertos == total else YELLOW}Acurácia: {acertos}/{total}{RESET}"
+        )
 
     print(f"\n{'='*120}\n")
+
 
 if __name__ == "__main__":
     main()

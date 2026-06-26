@@ -6,18 +6,19 @@ Este documento descreve as decisões arquiteturais que governam a infraestrutura
 
 ## 1. Visão Geral da Orquestração
 
-A infraestrutura é orquestrada via Docker Compose. O banco de dados **não é um contêiner** — o Supabase é um serviço externo gerenciado, e toda persistência de dados é responsabilidade dele.
+A infraestrutura é orquestrada via Docker Compose. Os bancos de dados **não são contêineres** — utilizamos o Supabase (relacional) e o Qdrant (vetorial) como serviços externos em nuvem, e toda persistência de dados e vetores é responsabilidade deles.
 
-Os contêineres locais são exatamente quatro:
+Os contêineres locais são exatamente cinco:
 
 | Contêiner | Tecnologia | Porta exposta no host |
 |---|---|---|
 | `nextjs` | Next.js (Node.js 20) | `3000` |
-| `fastapi` | FastAPI (Python 3.12) | `8000` |
+| `fastapi` | FastAPI (Python 3.12) | `8001` |
 | `worker` | Python 3.12 + PyTorch + BAAI/bge-m3 | **Nenhuma** |
 | `redis` | Redis Alpine | **Nenhuma** |
+| `docs` | MkDocs Material | `8002` |
 
-O Worker não expõe portas — é disparado por cron job e opera completamente isolado do tráfego web. O Redis também é exclusivamente um canal interno de comunicação assíncrona.
+O Worker e o Redis não expõem portas diretamente no host (sendo de uso estritamente interno e isolado). O contêiner `docs` é totalmente isolado de rede e serve apenas para a visualização da documentação local.
 
 ---
 
@@ -28,7 +29,7 @@ O Worker não expõe portas — é disparado por cron job e opera completamente 
 O sistema é dividido em dois lados que nunca se comunicam diretamente. Essa separação é garantida pela **topologia de redes Docker**, não apenas por convenção de código. A orquestração define três redes internas:
 
 - **Rede `read`**: conecta `nextjs` ↔ `fastapi` ↔ `redis`.
-- **Rede `write`**: conecta `worker` ↔ `redis`. O Worker acessa o Supabase e o Motor de Inferência via egress HTTPS — não via rede interna Docker.
+- **Rede `write`**: conecta `worker` ↔ `redis`. O Worker acessa o Supabase, o Qdrant e o Motor de Inferência via egress HTTPS — não via rede interna Docker.
 - O `redis` pertence **a ambas as redes** — é o único ponto de contato entre os dois lados, exclusivamente como canal assíncrono de sinalização.
 
 A `fastapi` **não pertence à rede `write`** e, portanto, não tem rota de rede para o `worker`. Worker e FastAPI nunca se enxergam diretamente — a topologia torna isso impossível.
@@ -46,8 +47,9 @@ flowchart TB
         WK["worker\nPython + PyTorch"]
     end
 
-    EXT1[("Supabase\nexterno")]
-    EXT2[("Groq / Colab\nexterno")]
+    EXT1[("Supabase\nRelacional (Nuvem)")]
+    EXT2[("Qdrant\nVetorial (Nuvem)")]
+    EXT3[("Gemini API\nLLM Externo")]
 
     NX -->|HTTP| FA
     FA <-->|sub / pub| RD
@@ -56,23 +58,25 @@ flowchart TB
     FA -->|HTTPS| EXT1
     WK -->|HTTPS| EXT1
     WK -->|HTTPS| EXT2
+    WK -->|HTTPS| EXT3
 ```
 
-### 2.2 Banco de dados externo — sem contêiner PostgreSQL
+### 2.2 Bancos de dados externos — sem contêineres locais
 
-Não existe e não deve existir um contêiner PostgreSQL no `docker-compose.yml`. O banco é o Supabase, exclusivamente.
+Não existe e não deve existir nenhum contêiner Docker para bancos de dados no `docker-compose.yml`. A persistência é responsabilidade exclusiva de dois serviços em nuvem com papéis complementares e bem definidos:
 
-FastAPI e Worker acessam o banco via variáveis de ambiente `SUPABASE_URL` e `SUPABASE_KEY`.
+- **Supabase (Relacional):** armazena todos os dados estruturados do domínio. FastAPI e Worker acessam o banco via variáveis de ambiente `SUPABASE_URL` e `SUPABASE_KEY`, por egress HTTPS.
+- **Qdrant (Vetorial):** armazena e indexa 100% dos embeddings gerados pelo Worker. O Supabase não possui mais nenhuma responsabilidade vetorial — o pgvector não é utilizado. O Worker acessa o Qdrant via variáveis de ambiente `QDRANT_URL` e `QDRANT_API_KEY`, também por egress HTTPS.
 
-> Para detalhes sobre o Supabase como plataforma, pgvector e o modelo de persistência, consulte a [Visão Geral da Arquitetura](arquitetura.md).
+Como ambos os bancos são serviços externos, nenhum volume Docker adicional é necessário para persistência de dados. O comando `docker compose down -v` não representa risco de perda de dados de negócio.
 
-### 2.3 Motor de Inferência externo — troca de provedor via `.env`
+> Para detalhes sobre o Supabase como plataforma e o modelo de persistência relacional, consulte a [Visão Geral da Arquitetura](arquitetura.md).
 
-O Motor de Inferência não é um contêiner local. O provedor é selecionado pela variável de ambiente `LLM_PROVIDER`, **sem nenhuma alteração em Dockerfile ou `docker-compose.yml`**.
+### 2.3 Motor de Inferência externo — Gemini API via `.env`
 
-O Worker acessa o provedor exclusivamente via egress HTTPS a partir da rede `write`.
+O Motor de Inferência não é um contêiner local. Ele utiliza diretamente a API oficial do Gemini (`gemini-2.5-flash-lite`) como serviço externo em nuvem.
 
-> Para detalhes sobre os provedores (Groq, Colab/Ollama) e estratégia híbrida, consulte a [Visão Geral da Arquitetura](arquitetura.md).
+O Worker acessa a API do Gemini exclusivamente por meio de chamadas HTTPS a partir da rede `write`, autenticando-se com a variável `GEMINI_API_KEY` injetada via `.env`.
 
 ### 2.4 Volumes — cache HuggingFace
 
@@ -112,7 +116,7 @@ deploy:
 
 ### 2.7 Healthchecks e ordem de inicialização
 
-Como o banco é externo, não há dependência de inicialização de contêiner de banco. A ordem relevante é:
+Como ambos os bancos são externos, não há dependência de inicialização de contêiner de banco. A ordem relevante é:
 
 - `redis` deve subir primeiro — é pré-requisito para `fastapi` e `worker`.
 - `fastapi` aguarda o `redis` estar saudável antes de aceitar tráfego.
@@ -125,7 +129,7 @@ Uma falha no `worker` não derruba o Lado de Leitura — a FastAPI continua serv
 
 A invalidação do cache em memória da FastAPI ocorre via **Redis Pub/Sub**, preservando o isolamento CQRS:
 
-1. Ao fim de cada ciclo, o Worker persiste os dados no Supabase.
+1. Ao fim de cada ciclo, o Worker persiste os dados no Supabase e os embeddings no Qdrant.
 2. O Worker publica uma mensagem em um canal Redis.
 3. A FastAPI (subscriber assíncrono) recebe a mensagem e descarta o cache.
 4. O próximo request do Next.js recebe dados frescos diretamente do Supabase.
@@ -143,31 +147,33 @@ O ambiente local usa *bind mounts* (volumes mapeados para o host), refletindo in
 As variáveis abaixo afetam diretamente o comportamento dos contêineres:
 
 ```env
-# Supabase — banco de dados gerenciado (obrigatório para FastAPI e Worker)
+# Supabase — banco relacional gerenciado (obrigatório para FastAPI e Worker)
 SUPABASE_URL=
 SUPABASE_KEY=
 
-# Motor de Inferência — seletor de provedor (obrigatório para Worker)
-LLM_PROVIDER=          # "groq" ou "colab"
-GROQ_API_KEY=          # obrigatório quando LLM_PROVIDER=groq
-OLLAMA_BASE_URL=       # obrigatório quando LLM_PROVIDER=colab — atualizar a cada sessão
+# Qdrant — banco vetorial gerenciado (obrigatório para Worker)
+QDRANT_URL=
+QDRANT_API_KEY=
+
+# Motor de Inferência — API do Gemini (obrigatório para Worker)
+GEMINI_API_KEY=
 
 # Redis — canal de invalidação de cache
 REDIS_URL=redis://redis:6379
 
 # Front-end
-NEXT_PUBLIC_API_URL=http://localhost:8000
+NEXT_PUBLIC_API_URL=http://localhost:8001
 ```
 
 !!! danger "Atenção"
-    `OLLAMA_BASE_URL` não deve ter valor padrão. A ausência do valor quando `LLM_PROVIDER=colab` deve gerar erro explícito no Worker, não falha silenciosa. `REDIS_URL` é consumida pela FastAPI e pelo Worker — ambos devem falhar explicitamente se estiver ausente.
+    `GEMINI_API_KEY` não possui valor padrão e é obrigatória para o funcionamento das análises de IA do Worker. `REDIS_URL` é consumida pela FastAPI e pelo Worker — ambos devem falhar explicitamente se estiver ausente. `QDRANT_URL` e `QDRANT_API_KEY` são obrigatórias para o Worker — a ausência de qualquer uma deve gerar erro explícito antes de iniciar o pipeline de vetorização.
 
 ---
 
 ## 4. Guia de Execução Local
 
-!!! warning "Aviso sobre Arquitetura (Apple Silicon / ARM64)"
-    Os contêineres, especialmente o `worker`, devem rodar nativamente em `linux/arm64`. Configure `platform: linux/arm64` no `docker-compose.yml` para evitar emulação (Rosetta 2 / amd64), que causa gargalos severos de performance e estouro de memória durante a vetorização.
+!!! info "Arquitetura Nativa Multiplataforma"
+    A orquestração do Docker está configurada sem a diretiva rígida de `platform` no `docker-compose.yml`. Isso permite que o Docker monte e execute imagens nativas automaticamente para a arquitetura do seu sistema operacional host (ARM64 para chips Apple Silicon e AMD64 para PCs Intel/AMD com Windows/Linux), garantindo a máxima performance de processamento local sem lentidão de emulação.
 
 ### Passo 1 — Clonar o repositório
 
@@ -179,7 +185,7 @@ git checkout develop
 
 ### Passo 2 — Configurar o `.env`
 
-Crie o arquivo `.env` na raiz conforme a seção 3. Defina ao menos `SUPABASE_URL`, `SUPABASE_KEY`, `LLM_PROVIDER` e `REDIS_URL`.
+Crie o arquivo `.env` na raiz conforme a seção 3. Defina ao menos `SUPABASE_URL`, `SUPABASE_KEY`, `QDRANT_URL`, `QDRANT_API_KEY`, `GEMINI_API_KEY` e `REDIS_URL`.
 
 ### Passo 3 — Subir o ambiente
 
@@ -199,7 +205,8 @@ A partir da segunda execução, o *Layer Caching* e o volume HuggingFace elimina
 Ao final, estarão disponíveis:
 
 - **Interface do usuário:** http://localhost:3000
-- **Documentação da API (Swagger):** http://localhost:8000/docs
+- **Documentação da API (Swagger):** http://localhost:8001/docs
+- **Portal de Documentação (MkDocs):** http://localhost:8002
 
 ### Passo 4 — Derrubar o ambiente
 
@@ -215,7 +222,7 @@ docker compose down -v
 ```
 
 !!! danger "Atenção"
-    `down -v` apaga os pesos do modelo. A próxima execução fará o redownload dos ~2,3 GB.
+    `down -v` apaga os pesos do modelo. A próxima execução fará o redownload dos ~2,3 GB. Os dados de negócio (Supabase) e os embeddings (Qdrant) **não são afetados** — ambos residem em nuvem, fora do escopo dos volumes Docker.
 
 ---
 
@@ -231,16 +238,34 @@ docker compose run --rm worker python main.py
 
 ---
 
-## 6. Restrições que Nunca Devem Ser Violadas
+## 6. Executar os Testes Automatizados via Docker
+
+O repositório possui contêineres específicos para testes unitários e de integração configurados sob o perfil `test` no `docker-compose.yml`. Eles rodam o `pytest` de forma isolada.
+
+Para executar os testes do Lado de Leitura (API):
+```bash
+docker compose --profile test run --rm test-api pytest tests/api tests/test_setup.py
+```
+
+Para executar os testes do Lado de Escrita (ETL / Worker):
+```bash
+docker compose --profile test run --rm test-worker pytest tests/etl
+```
+
+---
+
+## 7. Restrições que Nunca Devem Ser Violadas
 
 | Restrição | Razão |
 |---|---|
 | FastAPI sem rota de rede para o Motor de Inferência | Isolamento CQRS — garantido por topologia Docker |
 | Worker sem rota de rede direta para a FastAPI | Comunicação exclusivamente via Redis |
-| Next.js sem acesso direto ao Supabase | Todo acesso ao banco passa pela FastAPI |
-| Nenhum contêiner PostgreSQL local | O banco é o Supabase |
+| Next.js sem acesso direto ao Supabase | Todo acesso ao banco relacional passa pela FastAPI |
+| Nenhum contêiner de banco de dados local (PostgreSQL ou Qdrant) | Persistência relacional é o Supabase; persistência vetorial é o Qdrant — ambos em nuvem |
+| Qdrant sem volume local | Banco vetorial externo — dados residem na nuvem, fora do escopo Docker |
 | Redis sem porta exposta no host | Canal interno — não acessível fora da orquestração |
 | Redis sem volume de persistência | Canal de sinalização efêmero |
-| Troca de provedor LLM apenas via `.env` | Sem alterações em Dockerfile ou `docker-compose.yml` |
-| Modelo de embedding fixo: `BAAI/bge-m3` | Consistência do espaço vetorial com dados já no Supabase |
+| Credenciais e chaves de API injetadas apenas via `.env` | Evita exposição de segredos no código ou no Docker |
+| Responsabilidade vetorial exclusiva do Qdrant | O pgvector (Supabase) não deve ser usado para embeddings — consistência do espaço vetorial |
+| Modelo de embedding fixo: `BAAI/bge-m3` | Consistência do espaço vetorial com dados já indexados no Qdrant |
 | Worker sem portas expostas no host | Isolamento do processamento pesado |

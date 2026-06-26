@@ -33,7 +33,9 @@ def main():
         "commit_chars_per_week": [],
     }
 
-    output_path = os.path.join(os.path.dirname(__file__), "..", "docs", "productivity", "metrics.json")
+    output_path = os.path.join(
+        os.path.dirname(__file__), "..", "docs", "productivity", "metrics.json"
+    )
 
     if not token:
         print("GITHUB_TOKEN não encontrado. Gerando arquivo vazio para teste local.")
@@ -58,7 +60,9 @@ def main():
     msg_lengths = {"0-20": 0, "21-50": 0, "51-100": 0, "101-200": 0, "200+": 0}
     heatmap = defaultdict(int)
     coauthors_weekly = defaultdict(int)
-    churn_weekly = defaultdict(lambda: {"additions": 0, "deletions": 0, "modifications": 0})
+    churn_weekly = defaultdict(
+        lambda: {"additions": 0, "deletions": 0, "modifications": 0}
+    )
     chars_weekly = defaultdict(lambda: {"total": 0, "count": 0})
 
     for i, commit in enumerate(commits):
@@ -174,12 +178,18 @@ def main():
 
     sorted_issue_weeks = sorted(issues_by_week.keys())
     metrics["issues_per_week"] = [
-        {"week": w, "opened": issues_by_week[w]["opened"], "closed": issues_by_week[w]["closed"]}
+        {
+            "week": w,
+            "opened": issues_by_week[w]["opened"],
+            "closed": issues_by_week[w]["closed"],
+        }
         for w in sorted_issue_weeks[-10:]
     ]
     metrics["top_issue_contributors"] = [
         {"username": u, "name": u, **{k: d[k] for k in ("opened", "closed", "total")}}
-        for u, d in sorted(issue_contributors.items(), key=lambda x: x[1]["total"], reverse=True)[:10]
+        for u, d in sorted(
+            issue_contributors.items(), key=lambda x: x[1]["total"], reverse=True
+        )[:10]
     ]
     metrics["lead_time_issues_by_label"] = [
         {"label": lbl, "avg_days_to_close": round(sum(times) / len(times), 1)}
@@ -195,11 +205,13 @@ def main():
             issues_by_week[sorted_issue_weeks[j]]["closed"]
             for j in range(max(0, i - 3), i + 1)
         ]
-        velocity.append({
-            "week": w,
-            "issues_closed": closed,
-            "rolling_avg": round(sum(window) / len(window), 1),
-        })
+        velocity.append(
+            {
+                "week": w,
+                "issues_closed": closed,
+                "rolling_avg": round(sum(window) / len(window), 1),
+            }
+        )
     metrics["velocity"] = velocity[-10:]
 
     # ── 3. Pull Requests & Reviews ────────────────────────────────────────────
@@ -207,7 +219,7 @@ def main():
     pr_authors = defaultdict(int)
     pr_merged_by = defaultdict(int)
     pr_merge_times_by_week = defaultdict(list)
-    review_matrix = defaultdict(int)   # (reviewer, author) → approved count
+    review_matrix = defaultdict(int)  # (reviewer, author) → approved count
     pr_reviewed_by = defaultdict(int)  # reviewer → reviews given
 
     for i, pr in enumerate(repo.get_pulls(state="all")):

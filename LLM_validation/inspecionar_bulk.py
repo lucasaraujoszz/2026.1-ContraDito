@@ -14,6 +14,7 @@ import json
 SESSION = requests.Session()
 SESSION.headers.update({"Accept": "application/json"})
 
+
 def inspecionar(label, url):
     print(f"\n{'='*60}")
     print(f"  {label}")
@@ -39,24 +40,26 @@ def inspecionar(label, url):
             return
 
         # Mostra primeiros 3 registros completos
-        print(f"\n  Primeiros 3 registros:")
+        print("\n  Primeiros 3 registros:")
         for i, item in enumerate(dados[:3]):
             print(f"\n  [{i+1}] {json.dumps(item, ensure_ascii=False, indent=4)}")
 
     except Exception as e:
         print(f"  ERRO: {e}")
 
+
 def main():
     # Votações de 2025 (mais recente, menor arquivo)
     inspecionar(
         "CÂMARA — Votações 2025 (metadados)",
-        "https://dadosabertos.camara.leg.br/arquivos/votacoes/json/votacoes-2025.json"
+        "https://dadosabertos.camara.leg.br/arquivos/votacoes/json/votacoes-2025.json",
     )
 
     inspecionar(
         "CÂMARA — Votos 2025 (por parlamentar)",
-        "https://dadosabertos.camara.leg.br/arquivos/votacoesVotos/json/votacoesVotos-2025.json"
+        "https://dadosabertos.camara.leg.br/arquivos/votacoesVotos/json/votacoesVotos-2025.json",
     )
+
 
 if __name__ == "__main__":
     main()

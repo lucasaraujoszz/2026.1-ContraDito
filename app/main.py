@@ -3,10 +3,12 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi_cache import FastAPICache
 from fastapi_cache.backends.inmemory import InMemoryBackend
-from app.rotas import politicos, logs
-from slowapi import _rate_limit_exceeded_handler
+from app.rotas import dados
+from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
-from app.rotas.politicos import limiter
+from slowapi.util import get_remote_address
+
+limiter = Limiter(key_func=get_remote_address)
 
 
 @asynccontextmanager
@@ -19,12 +21,8 @@ async def lifespan(app: FastAPI):
 
 tags_metadata = [
     {
-        "name": "Políticos",
-        "description": "Operações de listagem, paginação, perfil detalhado e busca semântica vetorial.",
-    },
-    {
-        "name": "Monitoramento",
-        "description": "Rotas internas de observabilidade e registro de falhas do Motor NLP.",
+        "name": "Dados Gerais",
+        "description": "Operações diretas de listagem das tabelas do Congresso (Câmara e Senado).",
     },
 ]
 
@@ -41,12 +39,14 @@ app = FastAPI(
 
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
-app.include_router(politicos.router)
-app.include_router(logs.router)
+app.include_router(dados.router)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=[
+        "http://localhost:3000",
+        "https://*.vercel.app"
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

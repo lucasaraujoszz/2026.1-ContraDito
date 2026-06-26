@@ -187,12 +187,14 @@ def processar_lote():
     rodar_fase_ia()
     print("-" * 50)
     rodar_fase_logica()
-    
+
     print("-" * 50)
     print("FASE 3: Disparando recálculo de scores na API principal...")
     try:
         # Usa o nome do serviço 'api' do docker-compose
-        httpx.post("http://api:8000/api/politicos/interno/recalcular-scores", timeout=30.0)
+        httpx.post(
+            "http://api:8000/api/politicos/interno/recalcular-scores", timeout=30.0
+        )
         print("Scores atualizados com sucesso no banco!")
     except Exception as e:
         print(f"   Erro ao avisar a API para recalcular os scores: {e}")
@@ -207,6 +209,7 @@ def processar_lote():
     fim = time.time()
     print("=" * 50)
     print(f"Worker finalizado com sucesso em {fim - inicio:.1f} segundos.")
+
 
 if __name__ == "__main__":
     processar_lote()

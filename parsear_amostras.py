@@ -34,6 +34,6 @@ with open("amostras/amostra_para_luiz.json", "w", encoding="utf-8") as f:
     json.dump(contrato, f, ensure_ascii=False, indent=2)
 
 print("✔ amostra_para_luiz.json salvo")
-print(f"  Deputado : Aécio Neves (PSDB/MG)")
+print("  Deputado : Aécio Neves (PSDB/MG)")
 print(f"  Data     : {data}")
 print(f"  Texto    : {texto[:80]}..." if len(texto) > 80 else f"  Texto: {texto}")

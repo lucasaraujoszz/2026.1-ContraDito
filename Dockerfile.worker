@@ -1,12 +1,56 @@
-FROM python:3.12-slim
+# =================================================================
+# Estágio 1: 'base' - Imagem python
+# =================================================================
+FROM python:3.12-slim as base
 
-WORKDIR /code
+WORKDIR /app
 
+# Evita a criação de arquivos .pyc e logs cacheados para reduzir tamanho da imagem
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+
+# =================================================================
+# Estágio 2: 'builder_prod' - Instala apenas dependências de PRODUÇÃO
+# Preserva o cache em camadas original para builds ágeis.
+# =================================================================
+FROM base as builder_prod
+
+# Camada 1: Dependências de IA (PyTorch, Sentence-Transformers, Langchain)
+RUN pip install --no-cache-dir torch sentence-transformers langchain-core --extra-index-url https://download.pytorch.org/whl/cpu
+
+# Camada 2: Dependências de parsing de PDF e higienização
+RUN pip install --no-cache-dir pdfplumber beautifulsoup4
+
+# Camada 3: Demais dependências de produção do projeto
 COPY requirements.worker.txt .
-RUN pip install --no-cache-dir -r requirements.worker.txt
+RUN grep -v "google-genai" requirements.worker.txt > temp_requirements.txt && \
+    pip install --no-cache-dir -r temp_requirements.txt && \
+    pip install --no-cache-dir "google-genai==2.8.0" && \
+    rm temp_requirements.txt
+
+# =================================================================
+# Estágio 3: 'test' - Adiciona dependências de TESTE e define o comando
+# Para executar os testes: docker build --target test -f Dockerfile.worker .
+# =================================================================
+FROM builder_prod as test
+
+COPY requirements.test.txt .
+RUN pip install --no-cache-dir -r requirements.test.txt
 
 COPY . .
 
-EXPOSE 8001
+# O comando `pytest` será executado no diretório raiz do projeto
+CMD ["pytest"]
 
-CMD ["uvicorn", "worker_api:app", "--host", "0.0.0.0", "--port", "8001"]
+# =================================================================
+# Estágio 4: 'production' (final) - Imagem de produção enxuta
+# Esta é a imagem construída por padrão pelo `docker compose build`
+# =================================================================
+FROM base as production
+
+# Copia apenas os pacotes de produção pré-instalados do estágio 'builder_prod'
+COPY --from=builder_prod /usr/local/lib/python3.12/site-packages /usr/local/lib/python3.12/site-packages
+COPY --from=builder_prod /usr/local/bin /usr/local/bin
+
+COPY . .
+CMD ["python", "main.py"]

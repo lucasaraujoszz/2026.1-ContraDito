@@ -1,20 +1,48 @@
+# Git
 .git
 .gitignore
 .github/
-__pycache__/
-*.pyc
+
+# OS / IDEs
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Variáveis de Ambiente (Segurança)
 .env
-docs/
-amostras/
-extrair_amostras.py
-parsear_amostras.py
-pocs/
-seeder_camara.py
+.env.*
+!.env.example
+
+# Node / Next.js
+node_modules/
+frontend/node_modules/
+.next/
+frontend/.next/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Python / Ambiente Virtual
+__pycache__/
+*.py[cod]
+*$py.class
 venv/
 .venv/
 env/
+ENV/
+.pytest_cache/
+.coverage
+*.egg-info/
 
-node_modules/
-frontend/node_modules/
+# Arquivos e Scripts Específicos do Projeto (Não necessários em produção)
+docs/
+amostras/
+pocs/
+LLM_validation/
+extrair_amostras.py
+parsear_amostras.py
+seeder_camara.py
 
-.next/
+# Mantém o seeder_parlamentares.py acessível, pois será usado via `docker compose run`
